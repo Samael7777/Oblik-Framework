@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO.Ports;
 
 
 namespace Oblik.IO
@@ -14,7 +13,7 @@ namespace Oblik.IO
         /// <param name="Timeout">Таймаут</param>
         /// <param name="BytesToRead">Количество байт для чтения</param>
         /// <param name="buffer">Буфер для считанных данных</param>
-        private byte[] ReadAnswer(int BytesToRead)
+        private byte[] ReadAnswer(int BytesToRead, int timeout)
         {
             byte[] answer = new byte[BytesToRead];
             int BytesGet;
@@ -23,9 +22,9 @@ namespace Oblik.IO
             ulong start = GetTickCount();
             while (offset < BytesToRead)
             {
-                if ((GetTickCount() - start) > (ulong)Timeout)
+                if ((GetTickCount() - start) > (ulong)timeout)
                 {
-                    throw new Exception(StringsTable.Timeout);
+                    throw new Exception("Timeout");                             //TODO
                 }
                 try
                 {
@@ -38,7 +37,7 @@ namespace Oblik.IO
                 count -= BytesGet;
                 offset += BytesGet;
             }
-            if (offset != BytesToRead) { throw new OblikIOException(StringsTable.ReadError); }
+            if (offset != BytesToRead) { throw new OblikIOException("ReadError"); }     //TODO
             return answer;
         }
 
@@ -47,7 +46,7 @@ namespace Oblik.IO
         /// </summary>
         /// <param name="Query">Запрос к счетчику в формате массива L1</param>
         /// <return>Ответ счетчика в формате массива L1</return>>
-        public byte[] SendRequest(byte[] Query)
+        public byte[] Request(byte[] Query)
         {
             bool success = false;           //Флаг успеха операции
             byte[] ReadBuffer;              //Буфер для полученных данных
@@ -86,19 +85,30 @@ namespace Oblik.IO
                         answer = new byte[2];
                         r--;
                         //Получение результата L1
-                        ReadBuffer = ReadAnswer(1);
+                        ReadBuffer = ReadAnswer(1, Timeout);
                         answer[0] = ReadBuffer[0];
-                        if (answer[0] != 1) { throw new OblikIOException(ParseChannelError(answer[0])); }
+
+                        //if (Answer[0] != 1) { throw new OblikIOException(ParseChannelError(Answer[0])); }
+
+                        if (answer[0] != 1) 
+                        { 
+                            throw new OblikIOException("L1 error");             //TODO
+                        }     
                         //Получение количества байт в ответе
-                        ReadAnswer(sp, Timeout, 1, out ReadBuffer);
+                        ReadBuffer = ReadAnswer(1, Timeout);
                         answer[1] = ReadBuffer[0];
                         int len = ReadBuffer[0] + 1;
                         Array.Resize(ref answer, len + 2);
                         //Получение всего ответа
-                        ReadAnswer(sp, (int)(Timeout / 5u), len, out ReadBuffer);
+                        ReadBuffer = ReadAnswer(len, (int)(Timeout / 5u));
                         ReadBuffer.CopyTo(answer, 2);
                         success = (ReadBuffer.Length == len);
-                        if (answer[2] != 0) { throw new OblikIOException(ParseSegmentError(answer[2])); }
+
+                        //if (answer[2] != 0) { throw new OblikIOException(ParseSegmentError(answer[2])); }
+                        if (answer[2] != 0)
+                        {
+                            throw new OblikIOException("L2Error");              //TODO
+                        }
                         //Проверка контрольной суммы
                         byte cs = 0;
                         for (int i = 0; i < answer.Length; i++)
@@ -107,10 +117,10 @@ namespace Oblik.IO
                         }
                         if (cs != 0)
                         {
-                            throw new OblikIOException(StringsTable.CSCError);
+                            throw new OblikIOException("CSCError");             //TODO
                         }
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
                         success = false;
                     }
@@ -122,7 +132,7 @@ namespace Oblik.IO
             }
             if (!success)
             {
-                throw new OblikIOException(StringsTable.QueryErr);
+                throw new OblikIOException("Query error");
             }
             return answer;
         }
