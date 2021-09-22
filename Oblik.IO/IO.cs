@@ -1,44 +1,62 @@
-﻿using System;
+﻿/*
+ * Базовый ввод-вывод
+ */
 
+using System;
+using Oblik.Resources;
 
 namespace Oblik.IO
 {
     public partial class OblikConnector
     {
-        
+
         /// <summary>
         /// Чтение данных из порта
         /// </summary>
-        /// <param name="sp">Ссылка на порт</param>
-        /// <param name="Timeout">Таймаут</param>
         /// <param name="BytesToRead">Количество байт для чтения</param>
-        /// <param name="buffer">Буфер для считанных данных</param>
-        private byte[] ReadAnswer(int BytesToRead, int timeout)
+        /// <param name="index">Индекс начала записи в answer</param>
+        /// <param name="answer">Массив с полученными данными</param>
+        /// <returns></returns>
+        private bool ReadAnswer(int BytesToRead, int index, ref byte[] answer)
         {
-            byte[] answer = new byte[BytesToRead];
-            int BytesGet;
+            
+            //Таймаут на получение данных c ускорением для пакета
+            int to = (BytesToRead > 1)? (Timeout / 5) : Timeout;  
+            
+            byte[] buffer = new byte[BytesToRead];      //Буфер для чтения
+            
+            int BytesGot;                               //Получено байт
             int count = BytesToRead;
             int offset = 0;
             ulong start = GetTickCount();
             while (offset < BytesToRead)
             {
-                if ((GetTickCount() - start) > (ulong)timeout)
+                if ((GetTickCount() - start) > (ulong)to)
                 {
-                    throw new Exception("Timeout");                             //TODO
+                    //Таймаут
+                    LastReceiverError = Resources.Resources.Timeout;
+                    return false;                           
                 }
                 try
                 {
-                    BytesGet = (byte)sp.Read(answer, offset, count);
+                    BytesGot = (byte)sp.Read(buffer, offset, count);
                 }
                 catch
                 {
-                    BytesGet = 0;
+                    BytesGot = 0;
                 }
-                count -= BytesGet;
-                offset += BytesGet;
+                count -= BytesGot;
+                offset += BytesGot;
             }
-            if (offset != BytesToRead) { throw new OblikIOException("ReadError"); }     //TODO
-            return answer;
+            if (offset != BytesToRead) 
+            {
+                //Ошибка чтения порта
+                LastReceiverError = Resources.Resources.ReadError;
+                return false;
+            }
+            //Сохранение полученных данных
+            Array.Copy(buffer, 0, answer, index, BytesToRead);
+            return true;
         }
 
         /// <summary>
@@ -48,91 +66,106 @@ namespace Oblik.IO
         /// <return>Ответ счетчика в формате массива L1</return>>
         public byte[] Request(byte[] Query)
         {
+            //Исключение при пустом запросе
+            if (Query == null)
+            {
+                throw new ArgumentNullException(paramName: nameof(Query));
+            }
+            
             bool success = false;           //Флаг успеха операции
-            byte[] ReadBuffer;              //Буфер для полученных данных
-            byte[] answer = new byte[3];
+            byte[] answer = new byte[2];    //Буфер результата
+            
+            //Попытка открытия порта
             try
             {
+                sp.Open();
+            }
+            catch (Exception e)
+            {
+                    throw new OblikIOException(e.Message);
+            }
+                
+            int r = repeats + 1;
+
+            while ((r > 0) && (!success))   //Повтор при ошибке
+            {
+                r--;
+                //Очистка буферов
+                sp.DiscardOutBuffer();                                                                 
+                sp.DiscardInBuffer();                                                                  
+                
+                //Отправка запроса
                 try
                 {
-                    sp.Open();
+                    sp.Write(Query, 0, Query.Length);
                 }
                 catch (Exception e)
                 {
-                      throw new OblikIOException(e.Message);
+                    throw new OblikIOException(e.Message);
                 }
                 
-                int r = Repeats;
+                answer = new byte[2];
 
-                while ((r > 0) && (!success))   //Повтор при ошибке
+                //Получение результата L1
+                if (!ReadAnswer(1, 0, ref answer))
                 {
-                    sp.DiscardOutBuffer();                                                                 //очистка буфера передачи
-                    sp.DiscardInBuffer();                                                                  //очистка буфера приема
-                    try
-                    {
-                        if (Query == null)
-                        {
-                            throw new ArgumentNullException(paramName: nameof(Query));
-                        }
-                        sp.Write(Query, 0, Query.Length);
-                    }
-                    catch (Exception e)
-                    {
-                        throw new OblikIOException(e.Message);
-                    }
-                    try
-                    {
-                        answer = new byte[2];
-                        r--;
-                        //Получение результата L1
-                        ReadBuffer = ReadAnswer(1, Timeout);
-                        answer[0] = ReadBuffer[0];
-
-                        //if (Answer[0] != 1) { throw new OblikIOException(ParseChannelError(Answer[0])); }
-
-                        if (answer[0] != 1) 
-                        { 
-                            throw new OblikIOException("L1 error");             //TODO
-                        }     
-                        //Получение количества байт в ответе
-                        ReadBuffer = ReadAnswer(1, Timeout);
-                        answer[1] = ReadBuffer[0];
-                        int len = ReadBuffer[0] + 1;
-                        Array.Resize(ref answer, len + 2);
-                        //Получение всего ответа
-                        ReadBuffer = ReadAnswer(len, (int)(Timeout / 5u));
-                        ReadBuffer.CopyTo(answer, 2);
-                        success = (ReadBuffer.Length == len);
-
-                        //if (answer[2] != 0) { throw new OblikIOException(ParseSegmentError(answer[2])); }
-                        if (answer[2] != 0)
-                        {
-                            throw new OblikIOException("L2Error");              //TODO
-                        }
-                        //Проверка контрольной суммы
-                        byte cs = 0;
-                        for (int i = 0; i < answer.Length; i++)
-                        {
-                            cs ^= answer[i];
-                        }
-                        if (cs != 0)
-                        {
-                            throw new OblikIOException("CSCError");             //TODO
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        success = false;
-                    }
+                    success = false;
+                    continue;
                 }
+               
+                //Проверка на ошибки L1
+                if (answer[0] != 1) 
+                { 
+                    throw new OblikIOException(ParseChannelError(answer[0])); 
+                }
+
+                //Получение количества байт в ответе
+                if (!ReadAnswer(1, 1, ref answer))
+                {
+                    success = false;
+                    continue;
+                }
+
+                int len = answer[1] + 1;
+                Array.Resize(ref answer, len + 2);
+
+                //Получение оставшихся данных
+                if (!ReadAnswer(len, 2, ref answer))
+                {
+                    success = false;
+                    continue;
+                }
+               
+                //Проверка на ошибки L2
+                if (answer[2] != 0) 
+                { 
+                    throw new OblikIOException(ParseSegmentError(answer[2])); 
+                }
+                       
+                //Проверка контрольной суммы
+                byte cs = 0;
+                for (int i = 0; i < answer.Length; i++)
+                {
+                    cs ^= answer[i];
+                }
+                        
+                //Ошибка контрольной суммы
+                if (cs != 0)
+                {
+                    success = false;
+                    LastReceiverError = Resources.Resources.CSCError;            
+                }
+                success = true;
             }
-            finally
+            //Закрытие порта
+            if ((sp != null) && (sp.IsOpen))
             {
-                if (sp != null) { sp.Dispose(); }
+                sp.Close();
             }
+            //Исключение при неудачном приеме
             if (!success)
             {
-                throw new OblikIOException("Query error");
+                throw new OblikIOException(LastReceiverError);
             }
             return answer;
         }
