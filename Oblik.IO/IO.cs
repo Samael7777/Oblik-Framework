@@ -3,7 +3,6 @@
  */
 
 using System;
-using Oblik.Resources;
 
 namespace Oblik.IO
 {
@@ -19,12 +18,12 @@ namespace Oblik.IO
         /// <returns></returns>
         private bool ReadAnswer(int BytesToRead, int index, ref byte[] answer)
         {
-            
+
             //Таймаут на получение данных c ускорением для пакета
-            int to = (BytesToRead > 1)? (Timeout / 5) : Timeout;  
-            
+            int to = (BytesToRead > 1) ? (Timeout / 5) : Timeout;
+
             byte[] buffer = new byte[BytesToRead];      //Буфер для чтения
-            
+
             int BytesGot;                               //Получено байт
             int count = BytesToRead;
             int offset = 0;
@@ -34,8 +33,8 @@ namespace Oblik.IO
                 if ((GetTickCount() - start) > (ulong)to)
                 {
                     //Таймаут
-                    LastReceiverError = Resources.Resources.Timeout;
-                    return false;                           
+                    ErrorsLog.Add((int)Error.Timeout);
+                    return false;
                 }
                 try
                 {
@@ -48,10 +47,10 @@ namespace Oblik.IO
                 count -= BytesGot;
                 offset += BytesGot;
             }
-            if (offset != BytesToRead) 
+            if (offset != BytesToRead)
             {
                 //Ошибка чтения порта
-                LastReceiverError = Resources.Resources.ReadError;
+                ErrorsLog.Add((int)Error.ReadError);
                 return false;
             }
             //Сохранение полученных данных
@@ -60,21 +59,23 @@ namespace Oblik.IO
         }
 
         /// <summary>
-        /// Отправка запроса к счетчику и получение данных
+        /// Отправка запроса L1 к счетчику и получение данных
         /// </summary>
-        /// <param name="Query">Запрос к счетчику в формате массива L1</param>
         /// <return>Ответ счетчика в формате массива L1</return>>
-        public byte[] Request(byte[] Query)
+        public byte[] Request()
         {
             //Исключение при пустом запросе
-            if (Query == null)
+            if (l1 == null)
             {
-                throw new ArgumentNullException(paramName: nameof(Query));
+                throw new ArgumentNullException(paramName: nameof(l1));
             }
-            
+
             bool success = false;           //Флаг успеха операции
             byte[] answer = new byte[2];    //Буфер результата
-            
+
+            //Очистка журнала ошибок
+            ErrorsLog.Clear();
+
             //Попытка открытия порта
             try
             {
@@ -82,28 +83,30 @@ namespace Oblik.IO
             }
             catch (Exception e)
             {
-                    throw new OblikIOException(e.Message);
+                ErrorsLog.Add((int)Error.OpenPortError);
+                throw new OblikIOException(e.Message);
             }
-                
+
             int r = repeats + 1;
 
             while ((r > 0) && (!success))   //Повтор при ошибке
             {
                 r--;
                 //Очистка буферов
-                sp.DiscardOutBuffer();                                                                 
-                sp.DiscardInBuffer();                                                                  
-                
+                sp.DiscardOutBuffer();
+                sp.DiscardInBuffer();
+
                 //Отправка запроса
                 try
                 {
-                    sp.Write(Query, 0, Query.Length);
+                    sp.Write(l1, 0, l1.Length);
                 }
                 catch (Exception e)
                 {
+                    ErrorsLog.Add((int)Error.WriteError);
                     throw new OblikIOException(e.Message);
                 }
-                
+
                 answer = new byte[2];
 
                 //Получение результата L1
@@ -112,11 +115,11 @@ namespace Oblik.IO
                     success = false;
                     continue;
                 }
-               
+
                 //Проверка на ошибки L1
-                if (answer[0] != 1) 
-                { 
-                    throw new OblikIOException(ParseChannelError(answer[0])); 
+                if (answer[0] != 1)
+                {
+                    throw new OblikIOException(DecodeChannelError(answer[0]));
                 }
 
                 //Получение количества байт в ответе
@@ -135,25 +138,26 @@ namespace Oblik.IO
                     success = false;
                     continue;
                 }
-               
+
                 //Проверка на ошибки L2
-                if (answer[2] != 0) 
-                { 
-                    throw new OblikIOException(ParseSegmentError(answer[2])); 
+                if (answer[2] != 0)
+                {
+                    throw new OblikIOException(DecodeSegmentError(answer[2]));
                 }
-                       
-                //Проверка контрольной суммы
+
+                //Проверка контрольной суммы ответа
                 byte cs = 0;
                 for (int i = 0; i < answer.Length; i++)
                 {
                     cs ^= answer[i];
                 }
-                        
-                //Ошибка контрольной суммы
+
+                //Ошибка контрольной суммы ответа
                 if (cs != 0)
                 {
                     success = false;
-                    LastReceiverError = Resources.Resources.CSCError;            
+                    ErrorsLog.Add((int)Error.CSCError);
+                    continue;
                 }
                 success = true;
             }
@@ -165,7 +169,8 @@ namespace Oblik.IO
             //Исключение при неудачном приеме
             if (!success)
             {
-                throw new OblikIOException(LastReceiverError);
+                ErrorsLog.Add((int)Error.QueryError);
+                throw new OblikIOException(Resources.Resources.QueryErr);
             }
             return answer;
         }
