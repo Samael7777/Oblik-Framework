@@ -4,9 +4,9 @@
 
 using System;
 
-namespace Oblik.IO
+namespace Oblik.Driver
 {
-    public partial class OblikConnector
+    public partial class OblikDriver
     {
 
         /// <summary>
@@ -20,7 +20,7 @@ namespace Oblik.IO
         {
 
             //Таймаут на получение данных c ускорением для пакета
-            int to = (BytesToRead > 1) ? (Timeout / 5) : Timeout;
+            int timeout = (BytesToRead > 1) ? (connectionParams.Timeout / 5) : connectionParams.Timeout;
 
             byte[] buffer = new byte[BytesToRead];      //Буфер для чтения
 
@@ -30,7 +30,7 @@ namespace Oblik.IO
             ulong start = GetTickCount();
             while (offset < BytesToRead)
             {
-                if ((GetTickCount() - start) > (ulong)to)
+                if ((GetTickCount() - start) > (ulong)timeout)
                 {
                     //Таймаут
                     ErrorsLog.Add((int)Error.Timeout);
@@ -61,8 +61,9 @@ namespace Oblik.IO
         /// <summary>
         /// Отправка запроса L1 к счетчику и получение данных
         /// </summary>
-        /// <return>Ответ счетчика в формате массива L1</return>>
-        public byte[] Request()
+        /// <param name="l1">Запрос L1 к счетчику</param>
+        /// <returns>Ответ счетчика в формате массива L2</returns>
+        public byte[] Request(byte[] l1)
         {
             //Исключение при пустом запросе
             if (l1 == null)
@@ -72,6 +73,8 @@ namespace Oblik.IO
 
             bool success = false;           //Флаг успеха операции
             byte[] answer = new byte[2];    //Буфер результата
+            byte[] result = new byte[0];    //Буфер для ответа L2
+            int L2len;                      //Количество байт в ответе L2
 
             //Очистка журнала ошибок
             ErrorsLog.Clear();
@@ -87,7 +90,7 @@ namespace Oblik.IO
                 throw new OblikIOException(e.Message);
             }
 
-            int r = repeats + 1;
+            int r = connectionParams.Repeats + 1;
 
             while ((r > 0) && (!success))   //Повтор при ошибке
             {
@@ -129,20 +132,14 @@ namespace Oblik.IO
                     continue;
                 }
 
-                int len = answer[1] + 1;
-                Array.Resize(ref answer, len + 2);
+                L2len = answer[1] + 1;
+                Array.Resize(ref answer, L2len + 2);
 
                 //Получение оставшихся данных
-                if (!ReadAnswer(len, 2, ref answer))
+                if (!ReadAnswer(L2len, 2, ref answer))
                 {
                     success = false;
                     continue;
-                }
-
-                //Проверка на ошибки L2
-                if (answer[2] != 0)
-                {
-                    throw new OblikIOException(DecodeSegmentError(answer[2]));
                 }
 
                 //Проверка контрольной суммы ответа
@@ -159,7 +156,15 @@ namespace Oblik.IO
                     ErrorsLog.Add((int)Error.CSCError);
                     continue;
                 }
-                success = true;
+                
+                success = true; //Запрос выполнен успешно
+                
+                //Формирование ответа L2
+                if (L2len > 0)
+                {
+                    Array.Resize(ref result, L2len);
+                    Array.Copy(answer, 2, result,0, L2len);
+                }
             }
             //Закрытие порта
             if ((sp != null) && (sp.IsOpen))
@@ -170,9 +175,48 @@ namespace Oblik.IO
             if (!success)
             {
                 ErrorsLog.Add((int)Error.QueryError);
-                throw new OblikIOException(Resources.Resources.QueryErr);
+                throw new OblikIOException(Resources.QueryErr);
             }
-            return answer;
+
+            return result;
+        }
+
+        /// <summary>
+        /// Возвращает количество миллисекунд для данного экземпляра
+        /// </summary>
+        /// <returns>Количество миллисекунд для данного экземпляра</returns>
+        private static ulong GetTickCount()
+        {
+            return (ulong)DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+        }
+
+        /// <summary>
+        /// Парсер ошибок L1
+        /// </summary>
+        /// <param name="error">Код ошибки L1</param>
+        /// <returns>Строка с текстом ошибки</returns>
+        private string DecodeChannelError(int error)
+        {
+            string res;
+            switch (error)
+            {
+                case 1:
+                    res = Resources.L1OK;
+                    break;
+                case 0xff:
+                    ErrorsLog.Add((int)Error.L1CSCError);
+                    res = Resources.L1CSCError;
+                    break;
+                case 0xfe:
+                    ErrorsLog.Add((int)Error.L1OverFlow);
+                    res = Resources.L1Overflow;
+                    break;
+                default:
+                    ErrorsLog.Add((int)Error.L1Unknown);
+                    res = Resources.L1Unk;
+                    break;
+            }
+            return res;
         }
     }
 }

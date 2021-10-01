@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{9591E3D5-DFED-4FE8-8E9B-9F23904C4F2B}</ProjectGuid>
+    <ProjectGuid>{4AED38C8-F276-4F6D-B5E3-7627DB2FECA7}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Oblik.Resources</RootNamespace>
-    <AssemblyName>Oblik.Resources</AssemblyName>
+    <RootNamespace>Oblik</RootNamespace>
+    <AssemblyName>Oblik.Framework</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -40,15 +40,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Oblik.Driver\IOblikDriver.cs" />
+    <Compile Include="Oblik\ConnectionParams.cs" />
+    <Compile Include="Oblik.FS\L2ErrorDecoder.cs" />
+    <Compile Include="Oblik.FS\OblikFS.cs" />
+    <Compile Include="Oblik\Constants.cs" />
+    <Compile Include="Oblik\Exceptions.cs" />
+    <Compile Include="Oblik.Driver\IO.cs" />
+    <Compile Include="Oblik.Driver\OblikDriver.cs" />
+    <Compile Include="Oblik\Utils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Resources.Designer.cs">
+    <Compile Include="Oblik.FS\Segments.cs" />
+    <Compile Include="Oblik\Resources.Designer.cs">
+      <DependentUpon>Resources.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources.resx">
+    <EmbeddedResource Include="Oblik\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>

@@ -1,7 +1,7 @@
 ﻿using System;
 
 
-namespace Oblik.IO
+namespace Oblik
 {
     /// <summary>
     /// Исключение операций ввода/вывода
