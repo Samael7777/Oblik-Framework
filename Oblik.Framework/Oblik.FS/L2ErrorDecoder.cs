@@ -19,55 +19,55 @@ namespace Oblik.FS
             switch (error)
             {
                 case 0:
-                    res = Resources.L2Err00;
+                    res = "L2 OK";
                     break;
                 case 0xff:
                     L2ErrorsLog.Add((int)Error.L2RequestError);
-                    res = Resources.L2ErrFF;
+                    res = "L2 request error";
                     break;
                 case 0xfe:
                     L2ErrorsLog.Add((int)Error.L2SegIDError);
-                    res = Resources.L2ErrFE;
+                    res = "L2 segment ID error";
                     break;
                 case 0xfd:
                     L2ErrorsLog.Add((int)Error.L2OperationError);
-                    res = Resources.L2ErrFD;
+                    res = "L2 segment operation error";
                     break;
                 case 0xfc:
                     L2ErrorsLog.Add((int)Error.L2UserLevelError);
-                    res = Resources.L2ErrFC;
+                    res = "L2 user access level error";
                     break;
                 case 0xfb:
                     L2ErrorsLog.Add((int)Error.L2PermissionError);
-                    res = Resources.L2ErrFB;
+                    res = "L2 data permission error";
                     break;
                 case 0xfa:
                     L2ErrorsLog.Add((int)Error.L2OffsetError);
-                    res = Resources.L2ErrFA;
+                    res = "L2 segmnt offset error";
                     break;
                 case 0xf9:
                     L2ErrorsLog.Add((int)Error.L2WriteReqError);
-                    res = Resources.L2ErrF9;
+                    res = "L2 write request error";
                     break;
                 case 0xf8:
                     L2ErrorsLog.Add((int)Error.L2DataLenError);
-                    res = Resources.L2ErrF8;
+                    res = "L2 data lenght must be above zero";
                     break;
                 case 0xf7:
                     L2ErrorsLog.Add((int)Error.L2PassError);
-                    res = Resources.L2ErrF7;
+                    res = "L2 wrong password";
                     break;
                 case 0xf6:
                     L2ErrorsLog.Add((int)Error.L2CleanError);
-                    res = Resources.L2ErrF6;
+                    res = "L2 daygraph clear command is wrong";
                     break;
                 case 0xf5:
                     L2ErrorsLog.Add((int)Error.L2PassChangeError);
-                    res = Resources.L2ErrF5;
+                    res = "L2 password change restricted";
                     break;
                 default:
                     L2ErrorsLog.Add((int)Error.L2Unknown);
-                    res = Resources.L2ErrUnk;
+                    res = "L2 unknown error";
                     break;
             }
             return res;

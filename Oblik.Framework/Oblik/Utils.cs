@@ -6,9 +6,9 @@ namespace Oblik
     /// <summary>
     /// Набор инструментов
     /// </summary>
-    public class Utils
+    public static class Utils
     {
- 
+        
     }
     
 }
