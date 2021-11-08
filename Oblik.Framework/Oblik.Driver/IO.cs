@@ -174,8 +174,7 @@ namespace Oblik.Driver
             //Исключение при неудачном приеме
             if (!success)
             {
-                ErrorsLog.Add((int)Error.QueryError);
-                throw new OblikIOException("IO request execution error");
+                 throw new OblikIOException("IO request execution error");
             }
 
             return result;
@@ -204,15 +203,12 @@ namespace Oblik.Driver
                     res = "L1 OK";
                     break;
                 case 0xff:
-                    ErrorsLog.Add((int)Error.L1CSCError);
                     res = "L1 Checksum Error";
                     break;
                 case 0xfe:
-                    ErrorsLog.Add((int)Error.L1OverFlow);
                     res = "L1 Meter input buffer overflow";
                     break;
                 default:
-                    ErrorsLog.Add((int)Error.L1Unknown);
                     res = "L1 Unknown error";
                     break;
             }

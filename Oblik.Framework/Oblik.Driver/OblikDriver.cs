@@ -51,6 +51,19 @@ namespace Oblik.Driver
             };
         }
 
+        /// <summary>
+        /// Деструктор
+        /// </summary>
+        ~OblikDriver()
+        {
+            if (sp != null)
+            {
+                if (sp.IsOpen)
+                    sp.Close();
+                sp.Dispose();
+            }
+        }
+
         /*----------------------Public------------------------------------------*/
 
         /// <summary>

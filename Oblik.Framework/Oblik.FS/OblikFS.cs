@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Oblik;
+﻿using System.Collections.Generic;
 using Oblik.Driver;
 
 namespace Oblik.FS
 {
-    public partial class OblikFS
+    public partial class OblikFS : IOblikFS
     {
         /*-------------------------Private--------------------------------------*/
         /// <summary>
@@ -23,7 +20,7 @@ namespace Oblik.FS
             /// </summary>
             Write = 1,
         }
-        
+
         /// <summary>
         /// Массив данных L1
         /// </summary>
@@ -44,17 +41,11 @@ namespace Oblik.FS
         /// </summary>
         private ConnectionParams connectionParams;
 
-        /// <summary>
-        /// Журнал ошибок L2
-        /// </summary>
-        private List<int> L2ErrorsLog;
-
         /*-------------------------Constructors---------------------------------*/
         public OblikFS(ConnectionParams connectionParams)
         {
             this.connectionParams = connectionParams;
             oblikDriver = new OblikDriver(this.connectionParams);
-            L2ErrorsLog = new List<int>();
             l1 = new byte[0];
             l2 = new byte[0];
         }
@@ -63,8 +54,8 @@ namespace Oblik.FS
         /// <summary>
         /// Парметры подключения к счетчику
         /// </summary>
-        public ConnectionParams CurrentConnectionParams 
-        { 
+        public ConnectionParams CurrentConnectionParams
+        {
             get => connectionParams;
             set
             {
@@ -72,18 +63,10 @@ namespace Oblik.FS
                 oblikDriver.CurrentConnectionParams = value;
             }
         }
-        
-        /// <summary>
-        /// Журнал ошибок L1 последней операции
-        /// </summary>
-        public List<int> GetL1ErrorsList { get => oblikDriver.GetConnectionErrors; }
 
         /// <summary>
-        /// Журнал ошибок L2 последней операции
+        /// Журнал ошибок ввода-вывода
         /// </summary>
-        public List<int> GetL2ErrorsList { get => L2ErrorsLog; }
+        public List<int> GetIOErrorsList => oblikDriver.GetConnectionErrors;
     }
 }
-
-                
-               
