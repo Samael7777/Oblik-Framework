@@ -12,10 +12,15 @@ namespace Oblik.FS
         /// <param name="len">Количество данных для чтения</param>
         /// <param name="data">Полученные данные</param>
         /// <returns>Успех операции</returns>
-        public byte[] ReadSegment(byte segment, UInt16 offset, byte len)
+        public byte[] ReadSegment(int segment, int offset, int len)
         {
+            //Обрезка аргументов
+            segment &= 0xFF;
+            offset &= 0xFFFF;
+            len &= 0xFF;
+
             byte[] result = new byte[0];
-            PerformFrame(segment, offset, len, Access.Read);
+            PerformFrame((byte)segment, (ushort)offset, (byte)len, Access.Read);
             byte[] answer = oblikDriver.Request(l1);
             //Проверка на ошибки L2
             if (answer[0] != 0)
@@ -34,14 +39,18 @@ namespace Oblik.FS
         /// <param name="offset">Смещение относительно начала сегмента</param>
         /// <param name="data">Данные для записи</param>
         /// <returns>Успех операции</returns>
-        public void WriteSegment(byte segment, UInt16 offset, byte[] data)
+        public void WriteSegment(int segment, int offset, byte[] data)
         {
+            //Обрезка аргументов
+            segment &= 0xFF;
+            offset &= 0xFFFF;
+
             //Проверка на наличие данных для записи
             if (data == null)
             {
                 throw new ArgumentNullException(nameof(data));
             }
-            PerformFrame(segment, offset, (byte)data.Length, Access.Write, data);
+            PerformFrame((byte)segment, (ushort)offset, (byte)data.Length, Access.Write, data);
             byte[] answer = oblikDriver.Request(l1);
             //Проверка на ошибки L2
             if (answer[0] != 0)

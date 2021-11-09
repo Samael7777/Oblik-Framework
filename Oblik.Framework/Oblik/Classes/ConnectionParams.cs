@@ -75,7 +75,7 @@ namespace Oblik
         /// <summary>
         /// Конструктор
         /// </summary>
-        ConnectionParams()
+        public ConnectionParams()
         {
             Port = 1;
             Baudrate = 9600;

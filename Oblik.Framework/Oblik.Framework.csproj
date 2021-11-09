@@ -46,11 +46,15 @@
     <Compile Include="Oblik.Control\OblikControl.cs" />
     <Compile Include="Oblik.Driver\IOblikDriver.cs" />
     <Compile Include="Oblik.FS\IOblikFS.cs" />
+    <Compile Include="Oblik\Classes\CalcUnits.cs" />
+    <Compile Include="Oblik\Classes\CurrentValues.cs" />
     <Compile Include="Oblik\Classes\DayGraphRow.cs" />
     <Compile Include="Oblik\Classes\ConnectionParams.cs" />
     <Compile Include="Oblik.FS\L2ErrorDecoder.cs" />
     <Compile Include="Oblik.FS\OblikFS.cs" />
+    <Compile Include="Oblik\Classes\IntegralValues.cs" />
     <Compile Include="Oblik\Classes\NetworkConfig.cs" />
+    <Compile Include="Oblik\Classes\SegmentsMap.cs" />
     <Compile Include="Oblik\Constants.cs" />
     <Compile Include="Oblik\Exceptions.cs" />
     <Compile Include="Oblik.Driver\IO.cs" />

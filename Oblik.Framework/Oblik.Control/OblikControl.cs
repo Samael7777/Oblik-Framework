@@ -41,5 +41,40 @@ namespace Oblik.Control
             get => oblikFS.GetIOErrorsList; 
         }
 
+        /// <summary>
+        /// Карта сегментов
+        /// </summary>
+        public SegmentsMap SegmentsList
+        {
+            get
+            {
+                int numsegments = oblikFS.ReadSegment(1, 0, 1)[0];
+                return new SegmentsMap(oblikFS.ReadSegment(1, 0, numsegments * 5 + 1));
+            }
+            
+        }
+        
+        /// <summary>
+        /// Текущие значения измерений
+        /// </summary>
+        public CurrentValues CurrentVals
+        {
+            get
+            {
+                return new CurrentValues(oblikFS.ReadSegment(36, 0, CurrentValues.Size));
+            }
+        }
+
+        public CalcUnits CalculationUnits
+        {
+            get
+            {
+                return new CalcUnits(oblikFS.ReadSegment(56, 0, CalcUnits.Size));
+            }
+            set
+            {
+                oblikFS.WriteSegment(57, 0, value.RawData);
+            }
+        }
     }
 }
