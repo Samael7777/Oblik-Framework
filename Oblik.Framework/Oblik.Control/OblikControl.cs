@@ -13,7 +13,7 @@ namespace Oblik.Control
         OblikFS oblikFS;
 
         /*-------------------------Constructors---------------------------------*/
-        OblikControl(ConnectionParams connectionparams)
+        public OblikControl(ConnectionParams connectionparams)
         {
             connectionParams = connectionparams;
             oblikFS = new OblikFS(connectionParams);
