@@ -15,15 +15,15 @@ namespace Oblik
         /// <summary>
         /// Преобразование массива байт в UInt32
         /// </summary>
-        /// <param name="array"></param>
+        /// <param name="rawdata"></param>
         /// <returns>Число UInt32</returns>
-        public static UInt32 ToUint32(byte[] array)
+        public static UInt32 ToUint32(byte[] rawdata)
         {
-            Array.Reverse(array);
+            Array.Reverse(rawdata);
             MemoryStream stream = null;
             try
             {
-                stream = new MemoryStream(array);
+                stream = new MemoryStream(rawdata);
                 using (BinaryReader reader = new BinaryReader(stream))
                 {
                     stream = null;
@@ -71,15 +71,15 @@ namespace Oblik
         /// <summary>
         /// Преобразование массива байт в float
         /// </summary>
-        /// <param name="array"></param>
+        /// <param name="rawdata"></param>
         /// <returns></returns>
-        public static float ToFloat(byte[] array)
+        public static float ToFloat(byte[] rawdata)
         {
-            Array.Reverse(array);
+            Array.Reverse(rawdata);
             MemoryStream stream = null;
             try
             {
-                stream = new MemoryStream(array);
+                stream = new MemoryStream(rawdata);
                 using (BinaryReader reader = new BinaryReader(stream))
                 {
                     stream = null;
@@ -127,15 +127,15 @@ namespace Oblik
         /// <summary>
         /// Преобразование массива байт в word (оно же uint16)
         /// </summary>
-        /// <param name="array"></param>
+        /// <param name="rawdata"></param>
         /// <returns></returns>
-        public static UInt16 ToUint16(byte[] array)
+        public static UInt16 ToUint16(byte[] rawdata)
         {
-            Array.Reverse(array);
+            Array.Reverse(rawdata);
             MemoryStream stream = null;
             try
             {
-                stream = new MemoryStream(array);
+                stream = new MemoryStream(rawdata);
                 using (BinaryReader reader = new BinaryReader(stream))
                 {
                     stream = null;
@@ -167,25 +167,23 @@ namespace Oblik
         /// <summary>
         /// Преобразование массива байт в дату и время
         /// </summary>
-        /// <param name="array"></param>
+        /// <param name="rawdata"></param>
         /// <returns></returns>
-        public static DateTime ToUTCTime(byte[] array)
+        public static DateTime ToUTCTime(byte[] rawdata)
         {
-            UInt32 _ctime;  //Время по стандарту t_time
             DateTime BaseTime;
             BaseTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);       //Базовая точка времени 01.01.1970 00:00 GMT
-            _ctime = ToUint32(array);                                             //Время в формате C (time_t) 
-            return BaseTime.AddSeconds(_ctime);
+            return BaseTime.AddSeconds(ToUint32(rawdata));
         }
 
         /// <summary>
         /// Преобразование массива байт в uminiflo 
         /// </summary>
-        /// <param name="array"></param>
+        /// <param name="rawdata"></param>
         /// <returns></returns>
-        public static float ToUminiflo(byte[] array)
+        public static float ToUminiflo(byte[] rawdata)
         {
-            UInt16 _data = ToUint16(array);
+            UInt16 _data = ToUint16(rawdata);
             UInt16 man, exp;
             float res;
             man = (UInt16)(_data & 0x7FF);                                      //Мантисса - биты 0-10
@@ -197,11 +195,11 @@ namespace Oblik
         /// <summary>
         /// Преобразование массива байт в sminiflo
         /// </summary>
-        /// <param name="array"></param>
+        /// <param name="rawdata"></param>
         /// <returns></returns>
-        public static float ToSminiflo(byte[] array)
+        public static float ToSminiflo(byte[] rawdata)
         {
-            UInt16 _data = ToUint16(array);
+            UInt16 _data = ToUint16(rawdata);
             UInt16 sig = (UInt16)(_data & (UInt16)1);                                  //Знак - бит 0
             UInt16 man = (UInt16)((_data & 0x7FE) >> 1);                               //Мантисса - биты 1-10
             UInt16 exp = (UInt16)((_data & 0xF800) >> 11);                             //Порядок - биты 11-15

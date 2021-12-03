@@ -13,7 +13,7 @@ namespace Oblik
         /// <summary>
         /// Размер сырой структуры, байт
         /// </summary>
-        public const int Size = 20;
+        public const int Size = 28;
         /// <summary>
         /// Реактивная энергия "+" за период сохранения
         /// </summary>

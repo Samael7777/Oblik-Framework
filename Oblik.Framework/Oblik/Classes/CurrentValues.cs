@@ -14,6 +14,12 @@ namespace Oblik
         /// Размер сырой структуры, байт
         /// </summary>
         public const int Size = 24;
+        
+        /// <summary>
+        /// Сырые данные
+        /// </summary>
+        private byte[] serialize;
+
         public float Curr1 { get; private set; }
         public float Curr2 { get; private set; }
         public float Curr3 { get; private set; }
@@ -33,10 +39,7 @@ namespace Oblik
             }
         }
 
-        /// <summary>
-        /// Сырые данные
-        /// </summary>
-        private byte[] serialize;
+        
 
         public CurrentValues() 
         {
