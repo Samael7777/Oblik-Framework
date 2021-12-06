@@ -24,11 +24,6 @@ namespace Oblik
         public int Timeout { get; set; }
 
         /// <summary>
-        /// Количество повторов
-        /// </summary>
-        public int Repeats { get; set; }
-
-        /// <summary>
         /// Скорость соединения, бод
         /// </summary>
         public int Baudrate { get; set; }
@@ -80,7 +75,6 @@ namespace Oblik
             Port = 1;
             Baudrate = 9600;
             Timeout = 500;
-            Repeats = 2;
             Address = 0;
             Password = "";
             User = UserLevel.Energo;

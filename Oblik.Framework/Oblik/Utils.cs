@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-
+using System.Runtime.InteropServices;
 
 namespace Oblik
 {
@@ -12,6 +12,28 @@ namespace Oblik
     /// </summary>
     public static class Utils
     {
+
+        /// <summary>
+        /// Преобразование массива байт (Big-Endian) в значение 
+        /// </summary>
+        /// <typeparam name="T">Тип значения</typeparam>
+        /// <param name="rawdata">Массив байт</param>
+        /// <param name="index"> стартовый индекс</param>
+        /// <returns></returns>
+        static T ConvertToVal<T>(byte[] rawdata, int index) where T:struct
+        {
+            T result = new T();
+            int size = Marshal.SizeOf(result);
+            byte[] buf = new byte[size];
+            Array.Copy(rawdata, index, buf, 0, size);
+            Array.Reverse(buf);
+            IntPtr bufptr = Marshal.AllocHGlobal(size);
+            Marshal.Copy(buf, 0, bufptr, buf.Length);
+            result = (T)Marshal.PtrToStructure(bufptr, typeof(T));
+            Marshal.FreeHGlobal(bufptr);
+            return result;
+        }
+        
         /// <summary>
         /// Преобразование массива байт в UInt32
         /// </summary>
@@ -188,7 +210,7 @@ namespace Oblik
             float res;
             man = (UInt16)(_data & 0x7FF);                                      //Мантисса - биты 0-10
             exp = (UInt16)((_data & 0xF800) >> 11);                             //Порядок - биты 11-15
-            res = (float)System.Math.Pow(2, (exp - 15)) * (1 + man / 2048);     //Pow - возведение в степень
+            res = (float)Math.Pow(2, (exp - 15)) * (1 + man / 2048);     //Pow - возведение в степень
             return res;
         }
 

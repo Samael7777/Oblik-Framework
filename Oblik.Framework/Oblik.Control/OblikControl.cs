@@ -34,15 +34,7 @@ namespace Oblik.Control
                 oblikFS.CurrentConnectionParams = value;
             }
         }
-        
-        /// <summary>
-        /// Журнал ошибок ввода-вывода
-        /// </summary>
-        public List<int> GetIOErrorsList  
-        { 
-            get => oblikFS.GetIOErrorsList; 
-        }
-
+       
         /// <summary>
         /// Карта сегментов
         /// </summary>

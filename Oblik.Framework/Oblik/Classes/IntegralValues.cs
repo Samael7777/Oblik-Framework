@@ -7,12 +7,7 @@ namespace Oblik
 {
     public class IntegralValues
     {
-        public const int Size = 240;
-
-        /// <summary>
-        /// Сырые данные
-        /// </summary>
-        private byte[] serialize;
+        public const int Size = 240;    //Длина пакета
 
         public uint act_en_p { get; private set; }
         public uint act_en_n { get; private set; }
@@ -24,16 +19,6 @@ namespace Oblik
         public uint[] exceed_q { get; private set; }
         public float[] max_exc_q { get; private set; }
 
-        public byte[] RawData
-        {
-            set
-            {
-                CheckRawSize(value.Length);
-                value.CopyTo(serialize, 0);
-                FromRaw();
-            }
-        }
-
         public IntegralValues(byte[] rawdata)
         {
             CheckRawSize(rawdata.Length);
@@ -42,13 +27,11 @@ namespace Oblik
             channel_q = new uint[8, 4];
             exceed_q = new uint[4];
             max_exc_q = new float[4];
-            rawdata.CopyTo(serialize, 0);
-            FromRaw();
-        }
+            
+            int index = 0;
 
-        private void FromRaw()
-        {
-
+            act_en_p = Utils.ToUint32(Utils.ArrayPart(rawdata, index, sizeof(uint)));
+            index += sizeof(uint);
         }
 
         /// <summary>

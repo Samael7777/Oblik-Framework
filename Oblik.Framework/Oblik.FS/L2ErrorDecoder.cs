@@ -9,56 +9,40 @@ namespace Oblik.FS
     public partial class OblikFS
     {
         /// <summary>
-        /// Парсер ошибок L2
+        /// Парсер ошибок L2, при ошибке вызывает исключение OblikIOException
         /// </summary>
         /// <param name="error">Код ошибки L2</param>
-        /// <returns>Строка с текстом ошибки</returns>
-        private string DecodeSegmentError(int error)
+        private void DecodeSegmentError(int error)
         {
-            string res;
             switch (error)
             {
                 case 0:
-                    res = "L2 OK";
-                    break;
+                    break;      //No errors
                 case 0xff:
-                    res = "L2 request error";
-                    break;
+                    throw new OblikIOException("L2 request error", (int)Error.L2ReqError);
                 case 0xfe:
-                    res = "L2 segment ID error";
-                    break;
+                    throw new OblikIOException("L2 segment ID error", (int)Error.L2SegIdError);
                 case 0xfd:
-                    res = "L2 segment operation error";
-                    break;
+                    throw new OblikIOException("L2 segment operation error", (int)Error.L2SegOpError);
                 case 0xfc:
-                    res = "L2 user access level error";
-                    break;
+                    throw new OblikIOException("L2 user access level error", (int)Error.L2UserAcsError);
                 case 0xfb:
-                    res = "L2 data permission error";
-                    break;
+                    throw new OblikIOException("L2 data permission error", (int)Error.L2DataPermisError);
                 case 0xfa:
-                    res = "L2 segmnt offset error";
-                    break;
+                    throw new OblikIOException("L2 segmnt offset error", (int)Error.L2SegOfstError); 
                 case 0xf9:
-                    res = "L2 write request error";
-                    break;
+                    throw new OblikIOException("L2 write request error", (int)Error.L2WrReqError); 
                 case 0xf8:
-                    res = "L2 data lenght must be above zero";
-                    break;
+                    throw new OblikIOException("L2 data lenght must be above zero", (int)Error.L2DataLenError); 
                 case 0xf7:
-                    res = "L2 wrong password";
-                    break;
+                    throw new OblikIOException("L2 wrong password", (int)Error.L2PwdError); 
                 case 0xf6:
-                    res = "L2 daygraph clear command is wrong";
-                    break;
+                    throw new OblikIOException("L2 daygraph clear command is wrong", (int)Error.L2DGCleanError); 
                 case 0xf5:
-                    res = "L2 password change restricted";
-                    break;
+                    throw new OblikIOException("L2 password change restricted", (int)Error.L2PwdChngError);
                 default:
-                    res = "L2 unknown error";
-                    break;
+                    throw new OblikIOException("L2 unknown error", (int)Error.L2UnkError); 
             }
-            return res;
         }
     }
 }

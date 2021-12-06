@@ -2,7 +2,7 @@
 
 namespace Oblik.FS
 {
-    public partial class OblikFS
+    public partial class OblikFS : IOblikFS
     {
         /// <summary>
         /// Чтение сегмента счетчика
@@ -25,7 +25,7 @@ namespace Oblik.FS
             //Проверка на ошибки L2
             if (answer[0] != 0)
             {
-                throw new OblikIOException(DecodeSegmentError(answer[2]));
+                DecodeSegmentError(answer[2]);
             }
 
             Array.Copy(answer, 2, result, 0, answer[1]);
@@ -55,7 +55,7 @@ namespace Oblik.FS
             //Проверка на ошибки L2
             if (answer[0] != 0)
             {
-                throw new OblikIOException(DecodeSegmentError(answer[2]));
+                DecodeSegmentError(answer[2]);
             }
         }
 

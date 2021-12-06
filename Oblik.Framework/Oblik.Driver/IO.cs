@@ -33,8 +33,7 @@ namespace Oblik.Driver
                 if ((GetTickCount() - start) > (ulong)timeout)
                 {
                     //Таймаут
-                    ErrorsLog.Add((int)Error.Timeout);
-                    return false;
+                    throw new OblikIOException("Timeout", (int)Error.Timeout);                    
                 }
                 try
                 {
@@ -50,8 +49,7 @@ namespace Oblik.Driver
             if (offset != BytesToRead)
             {
                 //Ошибка чтения порта
-                ErrorsLog.Add((int)Error.ReadError);
-                return false;
+                throw new OblikIOException("Port read error", (int)Error.ReadError);
             }
             //Сохранение полученных данных
             Array.Copy(buffer, 0, answer, index, BytesToRead);
@@ -71,13 +69,9 @@ namespace Oblik.Driver
                 throw new ArgumentNullException(paramName: nameof(l1));
             }
 
-            bool success = false;           //Флаг успеха операции
             byte[] answer = new byte[2];    //Буфер результата
             byte[] result = new byte[0];    //Буфер для ответа L2
             int L2len;                      //Количество байт в ответе L2
-
-            //Очистка журнала ошибок
-            ErrorsLog.Clear();
 
             //Попытка открытия порта
             try
@@ -86,97 +80,66 @@ namespace Oblik.Driver
             }
             catch (Exception e)
             {
-                ErrorsLog.Add((int)Error.OpenPortError);
-                throw new OblikIOException(e.Message);
+                throw new OblikIOException(e.Message, (int)Error.OpenPortError);
             }
 
-            int r = connectionParams.Repeats + 1;
+            //Очистка буферов
+            sp.DiscardOutBuffer();
+            sp.DiscardInBuffer();
 
-            while ((r > 0) && (!success))   //Повтор при ошибке
+            //Отправка запроса
+            try
             {
-                r--;
-                //Очистка буферов
-                sp.DiscardOutBuffer();
-                sp.DiscardInBuffer();
+                sp.Write(l1, 0, l1.Length);
+            }
+            catch (Exception e)
+            {
+                throw new OblikIOException(e.Message, (int)Error.WriteError);
+            }
 
-                //Отправка запроса
-                try
-                {
-                    sp.Write(l1, 0, l1.Length);
-                }
-                catch (Exception e)
-                {
-                    ErrorsLog.Add((int)Error.WriteError);
-                    throw new OblikIOException(e.Message);
-                }
+            answer = new byte[2];
 
-                answer = new byte[2];
+            //Получение результата L1
+            ReadAnswer(1, 0, ref answer);
+         
+            //Проверка на ошибки L1
+            if (answer[0] != 1)
+            {
+                DecodeChannelError(answer[0]);
+            }
 
-                //Получение результата L1
-                if (!ReadAnswer(1, 0, ref answer))
-                {
-                    success = false;
-                    continue;
-                }
+            //Получение количества байт в ответе
+            ReadAnswer(1, 1, ref answer);
+            L2len = answer[1] + 1;
+            Array.Resize(ref answer, L2len + 2);
 
-                //Проверка на ошибки L1
-                if (answer[0] != 1)
-                {
-                    throw new OblikIOException(DecodeChannelError(answer[0]));
-                }
+            //Получение оставшихся данных
+            ReadAnswer(L2len, 2, ref answer);
 
-                //Получение количества байт в ответе
-                if (!ReadAnswer(1, 1, ref answer))
-                {
-                    success = false;
-                    continue;
-                }
+            //Проверка контрольной суммы ответа
+            byte cs = 0;
+            for (int i = 0; i < answer.Length; i++)
+            {
+                cs ^= answer[i];
+            }
 
-                L2len = answer[1] + 1;
-                Array.Resize(ref answer, L2len + 2);
+            //Ошибка контрольной суммы ответа
+            if (cs != 0)
+            {
+                throw new OblikIOException("Answer L1 CSC Error", (int)Error.L1CSCError);
+            }
 
-                //Получение оставшихся данных
-                if (!ReadAnswer(L2len, 2, ref answer))
-                {
-                    success = false;
-                    continue;
-                }
-
-                //Проверка контрольной суммы ответа
-                byte cs = 0;
-                for (int i = 0; i < answer.Length; i++)
-                {
-                    cs ^= answer[i];
-                }
-
-                //Ошибка контрольной суммы ответа
-                if (cs != 0)
-                {
-                    success = false;
-                    ErrorsLog.Add((int)Error.CSCError);
-                    continue;
-                }
-                
-                success = true; //Запрос выполнен успешно
-                
-                //Формирование ответа L2
-                if (L2len > 0)
-                {
-                    Array.Resize(ref result, L2len);
-                    Array.Copy(answer, 2, result,0, L2len);
-                }
+            //Формирование ответа L2
+            if (L2len > 0)
+            {
+                Array.Resize(ref result, L2len);
+                Array.Copy(answer, 2, result, 0, L2len);
             }
             //Закрытие порта
             if ((sp != null) && (sp.IsOpen))
             {
                 sp.Close();
             }
-            //Исключение при неудачном приеме
-            if (!success)
-            {
-                 throw new OblikIOException("IO request execution error");
-            }
-
             return result;
         }
 
@@ -190,29 +153,22 @@ namespace Oblik.Driver
         }
 
         /// <summary>
-        /// Парсер ошибок L1
+        /// Парсер ошибок L1, при ошибке вызывает исключение OblikIOException
         /// </summary>
         /// <param name="error">Код ошибки L1</param>
-        /// <returns>Строка с текстом ошибки</returns>
-        private string DecodeChannelError(int error)
+        private void DecodeChannelError(int error)
         {
-            string res;
             switch (error)
             {
                 case 1:
-                    res = "L1 OK";
-                    break;
+                    break;  //No errors
                 case 0xff:
-                    res = "L1 Checksum Error";
-                    break;
+                    throw new OblikIOException("L1 Checksum Error", (int)Error.L1CSCError);
                 case 0xfe:
-                    res = "L1 Meter input buffer overflow";
-                    break;
+                    throw new OblikIOException("L1 Meter input buffer overflow", (int)Error.L1BufOverfowError);
                 default:
-                    res = "L1 Unknown error";
-                    break;
+                    throw new OblikIOException("L1 Unknown error", (int)Error.L1UnkErrror);                 
             }
-            return res;
         }
     }
 }

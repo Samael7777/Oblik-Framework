@@ -18,11 +18,6 @@ namespace Oblik.Driver
         /// </summary>
         private SerialPort sp;
 
-        /// <summary>
-        /// Журнал кодов ошибок последней операции
-        /// </summary>
-        private List<int> ErrorsLog;
-
         /*-------------------------Constructors------------------------------*/
 
         /// <summary>
@@ -32,8 +27,6 @@ namespace Oblik.Driver
         public OblikDriver(ConnectionParams connectionParams)
         {
             this.connectionParams = connectionParams;
-
-            ErrorsLog = new List<int>();    //Инициализация журнала ошибок
 
             //Настройка соединения с COM портом
             sp = new SerialPort
@@ -65,11 +58,6 @@ namespace Oblik.Driver
         }
 
         /*----------------------Public------------------------------------------*/
-
-        /// <summary>
-        /// Список ошибок последнего соединения
-        /// </summary>
-        public List<int> GetConnectionErrors => ErrorsLog;
 
         /// <summary>
         /// Параметры текущего соединения

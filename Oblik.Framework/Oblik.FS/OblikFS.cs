@@ -63,10 +63,5 @@ namespace Oblik.FS
                 oblikDriver.CurrentConnectionParams = value;
             }
         }
-
-        /// <summary>
-        /// Журнал ошибок ввода-вывода
-        /// </summary>
-        public List<int> GetIOErrorsList => oblikDriver.GetConnectionErrors;
     }
 }
