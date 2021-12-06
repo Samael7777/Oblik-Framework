@@ -20,7 +20,7 @@ namespace Oblik
         /// <param name="rawdata">Массив байт</param>
         /// <param name="index"> стартовый индекс</param>
         /// <returns></returns>
-        static T ConvertToVal<T>(byte[] rawdata, int index) where T:struct
+        public static T ConvertToVal<T>(byte[] rawdata, int index) where T:struct
         {
             T result = new T();
             int size = Marshal.SizeOf(result);
