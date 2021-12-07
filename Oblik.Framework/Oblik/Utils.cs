@@ -19,11 +19,13 @@ namespace Oblik
         /// <typeparam name="T">Тип значения</typeparam>
         /// <param name="rawdata">Массив байт</param>
         /// <param name="index"> стартовый индекс</param>
-        /// <returns></returns>
+        /// <returns>Значение</returns>
         public static T ConvertToVal<T>(byte[] rawdata, int index) where T:struct
         {
-            T result = new T();
+            T result = default;
             int size = Marshal.SizeOf(result);
+            if ((rawdata.Length - index) < size)
+                throw new ArgumentException("Not enough data for conversion");
             byte[] buf = new byte[size];
             Array.Copy(rawdata, index, buf, 0, size);
             Array.Reverse(buf);
@@ -33,7 +35,97 @@ namespace Oblik
             Marshal.FreeHGlobal(bufptr);
             return result;
         }
-        
+
+        /// <summary>
+        /// Преобразование значения в массив байт (Big-Endian)
+        /// </summary>
+        /// <typeparam name="T">тип данных на входе</typeparam>
+        /// <param name="value"> значение</param>
+        /// <returns>Массив байт (Big-Endian)</returns>
+        public static byte[] ConvertToBytes<T>(T value) where T: struct
+        {
+            int size = Marshal.SizeOf(typeof(T));
+            byte[] result = new byte[size];
+            IntPtr bufptr = Marshal.AllocHGlobal(size);
+            Marshal.StructureToPtr(value, bufptr, false);
+            Marshal.Copy(bufptr, result, 0, size);
+            Marshal.FreeHGlobal(bufptr);
+            Array.Reverse(result);
+            return result;
+        }
+
+        /// <summary>
+        /// Преобразование массива байт в дату и время
+        /// </summary>
+        /// <param name="rawdata">Массив байт</param>
+        /// <param name="index">Начальный индекс</param>
+        /// <returns></returns>
+        public static DateTime ToUTCTime(byte[] rawdata, int index)
+        {
+            DateTime BaseTime;
+            BaseTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);       //Базовая точка времени 01.01.1970 00:00 GMT
+            return BaseTime.AddSeconds(ConvertToVal<uint>(rawdata, index));
+        }
+
+        /// <summary>
+        /// Преобразование массива байт в uminiflo 
+        /// </summary>
+        /// <param name="rawdata">Массив байт</param>
+        /// <param name="index">Начальный индекс</param>
+        /// <returns></returns>
+        public static float ToUminiflo(byte[] rawdata, int index)
+        {
+            UInt16 buf = ConvertToVal<UInt16>(rawdata, index);
+            UInt16 man, exp;
+            float res;
+            man = (UInt16)(buf & 0x7FF);                                      //Мантисса - биты 0-10
+            exp = (UInt16)((buf & 0xF800) >> 11);                             //Порядок - биты 11-15
+            res = (float)Math.Pow(2, (exp - 15)) * (1 + man / 2048);            //Pow - возведение в степень
+            return res;
+        }
+
+        /// <summary>
+        /// Преобразование массива байт в sminiflo
+        /// </summary>
+        /// <param name="rawdata">Массив байт</param>
+        /// <param name="index">Начальный индекс</param>
+        /// <returns></returns>
+        public static float ToSminiflo(byte[] rawdata, int index)
+        {
+            UInt16 buf = ConvertToVal<UInt16>(rawdata, index);
+            UInt16 sig = (UInt16)(buf & (UInt16)1);                                             //Знак - бит 0
+            UInt16 man = (UInt16)((buf & 0x7FE) >> 1);                                          //Мантисса - биты 1-10
+            UInt16 exp = (UInt16)((buf & 0xF800) >> 11);                                        //Порядок - биты 11-15
+            return (float)(Math.Pow(2, exp - 15) * (1 + (man / 2048)) * Math.Pow(-1, sig));     //Pow - возведение в степень
+        }
+
+        /// <summary>
+        /// Преобразование DateTime в массив байт согласно t_time
+        /// </summary>
+        /// <param name="Date"></param>
+        /// <returns></returns>
+        public static byte[] ToTime(DateTime Date)
+        {
+            DateTime BaseTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);      //Базовая точка времени 01.01.1970 00:00 GMT
+            UInt32 Seconds = (UInt32)(Date - BaseTime).TotalSeconds;
+            return ConvertToBytes<uint>(Seconds);
+        }
+
+        /// <summary>
+        /// Отдает массив заданной длины, начинающийся с заданного индекса исходного массива
+        /// </summary>
+        /// <param name="array">Источник</param>
+        /// <param name="index">Начальный индекс</param>
+        /// <param name="len">Длина</param>
+        /// <returns>Массив байт</returns>
+        public static byte[] ArrayPart(byte[] array, int index, int len)
+        {
+            byte[] result = new byte[len];
+            Array.Copy(array, index, result, 0, len);
+            return result;
+        }
+
+        /*
         /// <summary>
         /// Преобразование массива байт в UInt32
         /// </summary>
@@ -185,74 +277,7 @@ namespace Oblik
             res[1] = (byte)(data & 0x00FF);
             return res;
         }
-
-        /// <summary>
-        /// Преобразование массива байт в дату и время
-        /// </summary>
-        /// <param name="rawdata"></param>
-        /// <returns></returns>
-        public static DateTime ToUTCTime(byte[] rawdata)
-        {
-            DateTime BaseTime;
-            BaseTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);       //Базовая точка времени 01.01.1970 00:00 GMT
-            return BaseTime.AddSeconds(ToUint32(rawdata));
-        }
-
-        /// <summary>
-        /// Преобразование массива байт в uminiflo 
-        /// </summary>
-        /// <param name="rawdata"></param>
-        /// <returns></returns>
-        public static float ToUminiflo(byte[] rawdata)
-        {
-            UInt16 _data = ToUint16(rawdata);
-            UInt16 man, exp;
-            float res;
-            man = (UInt16)(_data & 0x7FF);                                      //Мантисса - биты 0-10
-            exp = (UInt16)((_data & 0xF800) >> 11);                             //Порядок - биты 11-15
-            res = (float)Math.Pow(2, (exp - 15)) * (1 + man / 2048);     //Pow - возведение в степень
-            return res;
-        }
-
-        /// <summary>
-        /// Преобразование массива байт в sminiflo
-        /// </summary>
-        /// <param name="rawdata"></param>
-        /// <returns></returns>
-        public static float ToSminiflo(byte[] rawdata)
-        {
-            UInt16 _data = ToUint16(rawdata);
-            UInt16 sig = (UInt16)(_data & (UInt16)1);                                  //Знак - бит 0
-            UInt16 man = (UInt16)((_data & 0x7FE) >> 1);                               //Мантисса - биты 1-10
-            UInt16 exp = (UInt16)((_data & 0xF800) >> 11);                             //Порядок - биты 11-15
-            return (float)(Math.Pow(2, exp - 15) * (1 + (man / 2048)) * Math.Pow(-1, sig));     //Pow - возведение в степень
-        }
-
-        /// <summary>
-        /// Преобразование DateTime в массив байт согласно t_time
-        /// </summary>
-        /// <param name="Date"></param>
-        /// <returns></returns>
-        public static byte[] ToTime(DateTime Date)
-        {
-            DateTime BaseTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);      //Базовая точка времени 01.01.1970 00:00 GMT
-            UInt32 Time = (UInt32)(Date - BaseTime).TotalSeconds;
-            return UInt32ToByte(Time);
-        }
-
-        /// <summary>
-        /// Отдает массив заданной длины, начинающийся с заданного индекса исходного массива
-        /// </summary>
-        /// <param name="array">Источник</param>
-        /// <param name="StartIndex">Начальный индекс</param>
-        /// <param name="Lenght">Длина</param>
-        /// <returns>Массив байт</returns>
-        public static byte[] ArrayPart(byte[] array, int StartIndex, int Lenght)
-        {
-            byte[] res = new byte[Lenght];
-            Array.Copy(array, StartIndex, res, 0, Lenght);
-            return res;
-        }
+        */
     }
-    
+
 }

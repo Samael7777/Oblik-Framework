@@ -27,7 +27,7 @@ namespace Oblik
         /// <summary>
         /// Скорость соединения, делитель от 115200
         /// </summary>
-        public ushort Divisor
+        public UInt16 Divisor
         {
             get => Divisor;
             set
@@ -99,7 +99,7 @@ namespace Oblik
         private void ToRaw()
         {
             serialize[0] = Addr;
-            Utils.UInt16ToByte(Divisor).CopyTo(serialize, 1);
+            Utils.ConvertToBytes(Divisor).CopyTo(serialize, 1);
         }
         /// <summary>
         /// Пересчет делителя от скорости

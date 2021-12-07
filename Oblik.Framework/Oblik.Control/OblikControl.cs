@@ -79,7 +79,15 @@ namespace Oblik.Control
         /// </summary>
         public int DayGraphRecords
         {
-            get => Utils.ToUint16(oblikFS.ReadSegment(44, 0, 2));
+            get => Utils.ConvertToVal<UInt16>(oblikFS.ReadSegment(44, 0, 2), 0);
+        }
+
+        // <summary>
+        /// Количество записей протокола событий
+        /// </summary>
+        public int EventLogRecords
+        {
+            get => Utils.ConvertToVal<UInt16>(oblikFS.ReadSegment(46, 0, 2), 0);
         }
 
         /// <summary>
@@ -139,7 +147,7 @@ namespace Oblik.Control
         /// </summary>
         public DateTime CurrentTimeUTC
         {
-            get => Utils.ToUTCTime(oblikFS.ReadSegment(64, 0, 4));
+            get => Utils.ToUTCTime(oblikFS.ReadSegment(64, 0, 4), 0);
             set => oblikFS.WriteSegment(65, 0, Utils.ToTime(value));
         }
 
@@ -152,6 +160,85 @@ namespace Oblik.Control
             set => CurrentTimeUTC = value.ToUniversalTime();
         }
 
+        /// <summary>
+        /// Интегральные показатели за текущие сутки
+        /// </summary>
+        public IntegralValues CurrentDayValues
+        {
+            get => new IntegralValues(oblikFS.ReadSegment(24, 0, IntegralValues.Size));
+        }
+        
+        /// <summary>
+        /// Интегральные показатели за текущий месяц
+        /// </summary>
+        public IntegralValues CurrentMonthValues
+        {
+            get => new IntegralValues(oblikFS.ReadSegment(25, 0, IntegralValues.Size));
+        }
+        
+        /// <summary>
+        /// Интегральные показатели за текущий квартал
+        /// </summary>
+        public IntegralValues CurrentQuartValues
+        {
+            get => new IntegralValues(oblikFS.ReadSegment(26, 0, IntegralValues.Size));
+        }
+        
+        /// <summary>
+        /// Интегральные показатели за текущий год
+        /// </summary>
+        public IntegralValues CurrentYearValues
+        {
+            get => new IntegralValues(oblikFS.ReadSegment(27, 0, IntegralValues.Size));
+        }
 
+        /// <summary>
+        /// Интегральные показатели за прошедшие сутки
+        /// </summary>
+        public IntegralValues PrevDayValues
+        {
+            get => new IntegralValues(oblikFS.ReadSegment(28, 0, IntegralValues.Size));
+        }
+        
+        /// <summary>
+        /// Интегральные показатели за прошедший месяц
+        /// </summary>
+        public IntegralValues PrevMonthValues
+        {
+            get => new IntegralValues(oblikFS.ReadSegment(29, 0, IntegralValues.Size));
+        }
+        
+        /// <summary>
+        /// Интегральные показатели за прошедший квартал
+        /// </summary>
+        public IntegralValues PrevQuartValues
+        {
+            get => new IntegralValues(oblikFS.ReadSegment(30, 0, IntegralValues.Size));
+        }
+        
+        /// <summary>
+        /// Интегральные показатели за прошедший год
+        /// </summary>
+        public IntegralValues PrevYearValues
+        {
+            get => new IntegralValues(oblikFS.ReadSegment(31, 0, IntegralValues.Size));
+        }
+
+        
+        /// <summary>
+        /// Получасовые значения
+        /// </summary>
+        public HalfHourValues HalfHourVals
+        {
+            get => new HalfHourValues(oblikFS.ReadSegment(38, 0, HalfHourValues.Size));
+        }
+
+        // <summary>
+        /// Указатель получасового графика
+        /// </summary>
+        public int HalfHourGraphPtr
+        {
+            get => (int)Utils.ConvertToVal<byte>(oblikFS.ReadSegment(48, 0, 1), 0);
+        }
     }
 }

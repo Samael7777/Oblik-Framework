@@ -39,53 +39,48 @@ namespace Oblik
             }
         }
 
-        
-
-        public CurrentValues() 
+        public CurrentValues(byte[] rawdata)
         {
             serialize = new byte[Size];
-        }
-        public CurrentValues(byte[] rawdata) : this()
-        {
             CheckRawSize(rawdata.Length);
             rawdata.CopyTo(serialize, 0);
             FromRaw();
         }
-                
+
         /// <summary>
         /// Преобразование массива байт в стрктуру
         /// </summary>
         private void FromRaw()
         {
             int index = 0;
-            Curr1 = Utils.ToUminiflo(Utils.ArrayPart(serialize, index, 2));
+            Curr1 = Utils.ToUminiflo(serialize, index);
             index += 2;
 
-            Curr2 = Utils.ToUminiflo(Utils.ArrayPart(serialize, index, 2));
+            Curr2 = Utils.ToUminiflo(serialize, index);
             index += 2;
 
-            Curr3 = Utils.ToUminiflo(Utils.ArrayPart(serialize, index, 2));
+            Curr3 = Utils.ToUminiflo(serialize, index);
             index += 2;
 
-            Volt1 = Utils.ToUminiflo(Utils.ArrayPart(serialize, index, 2));
+            Volt1 = Utils.ToUminiflo(serialize, index);
             index += 2;
 
-            Volt2 = Utils.ToUminiflo(Utils.ArrayPart(serialize, index, 2));
+            Volt2 = Utils.ToUminiflo(serialize, index);
             index += 2;
 
-            Volt3 = Utils.ToUminiflo(Utils.ArrayPart(serialize, index, 2));
+            Volt3 = Utils.ToUminiflo(serialize, index);
             index += 2;
 
-            Act_pw = Utils.ToUminiflo(Utils.ArrayPart(serialize, index, 2));
+            Act_pw = Utils.ToUminiflo(serialize, index);
             index += 2;
 
-            Rea_pw = Utils.ToUminiflo(Utils.ArrayPart(serialize, index, 2));
+            Rea_pw = Utils.ToUminiflo(serialize, index);
             index += 2;
 
             //Reserved1
             index += 2;
 
-            Freq = Utils.ToUint16(Utils.ArrayPart(serialize, index, 2));
+            Freq = Utils.ConvertToVal<UInt16>(serialize, index);
         }
         
         /// <summary>

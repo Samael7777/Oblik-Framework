@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+
 
 namespace Oblik
 {
@@ -10,6 +9,9 @@ namespace Oblik
     /// </summary>
     public class SegmentsMapRec
     {
+        /// <summary>
+        /// Размер сырой структуры, байт
+        /// </summary>
         public const int Size = 5;
         /// <summary>
         /// Номер сегмента
@@ -34,7 +36,7 @@ namespace Oblik
             Num = rawdata[0];
             Right = (byte)(rawdata[1] & 15);
             Access = (rawdata[1] & 128) >> 7;
-            SegSize = Utils.ToUint16(Utils.ArrayPart(rawdata, 2, 2));
+            SegSize = Utils.ConvertToVal<UInt16>(rawdata, 2);
 
         }
         /// <summary>

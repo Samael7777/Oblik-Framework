@@ -52,7 +52,9 @@
     <Compile Include="Oblik\Classes\ConnectionParams.cs" />
     <Compile Include="Oblik.FS\L2ErrorDecoder.cs" />
     <Compile Include="Oblik.FS\OblikFS.cs" />
+    <Compile Include="Oblik\Classes\HalfHourValues.cs" />
     <Compile Include="Oblik\Classes\IntegralValues.cs" />
+    <Compile Include="Oblik\Classes\MinuteValues.cs" />
     <Compile Include="Oblik\Classes\NetworkConfig.cs" />
     <Compile Include="Oblik\Classes\SegmentsMap.cs" />
     <Compile Include="Oblik\Constants.cs" />
