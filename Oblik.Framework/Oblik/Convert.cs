@@ -6,11 +6,10 @@ namespace Oblik
 {
 
     /// <summary>
-    /// Набор инструментов.
     /// Группа преобразователей массива байт в различные типы данных и наоборот. 
     /// Принимается, что старший байт имеет младший адрес (big-endian)
     /// </summary>
-    public static class Utils
+    public static class Convert
     {
 
         /// <summary>
@@ -20,12 +19,20 @@ namespace Oblik
         /// <param name="rawdata">Массив байт</param>
         /// <param name="index"> стартовый индекс</param>
         /// <returns>Значение</returns>
-        public static T ConvertToVal<T>(byte[] rawdata, int index) where T:struct
+        public static T ToValue<T>(byte[] rawdata, int index)
         {
             T result = default;
             int size = Marshal.SizeOf(result);
+
+            if (typeof(T) == typeof(DateTime))
+            {
+                DateTime baseTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+                return (T)baseTime;
+            }
+
             if ((rawdata.Length - index) < size)
                 throw new ArgumentException("Not enough data for conversion");
+
             byte[] buf = new byte[size];
             Array.Copy(rawdata, index, buf, 0, size);
             Array.Reverse(buf);
@@ -42,7 +49,7 @@ namespace Oblik
         /// <typeparam name="T">тип данных на входе</typeparam>
         /// <param name="value"> значение</param>
         /// <returns>Массив байт (Big-Endian)</returns>
-        public static byte[] ConvertToBytes<T>(T value) where T: struct
+        public static byte[] ToBytes<T>(T value) where T: struct
         {
             int size = Marshal.SizeOf(typeof(T));
             byte[] result = new byte[size];
@@ -62,9 +69,8 @@ namespace Oblik
         /// <returns></returns>
         public static DateTime ToUTCTime(byte[] rawdata, int index)
         {
-            DateTime BaseTime;
-            BaseTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);       //Базовая точка времени 01.01.1970 00:00 GMT
-            return BaseTime.AddSeconds(ConvertToVal<uint>(rawdata, index));
+            DateTime baseTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);       //Базовая точка времени 01.01.1970 00:00 GMT
+            return baseTime.AddSeconds(ToValue<uint>(rawdata, index));
         }
 
         /// <summary>
@@ -75,12 +81,12 @@ namespace Oblik
         /// <returns></returns>
         public static float ToUminiflo(byte[] rawdata, int index)
         {
-            UInt16 buf = ConvertToVal<UInt16>(rawdata, index);
+            UInt16 buf = ToValue<UInt16>(rawdata, index);
             UInt16 man, exp;
             float res;
             man = (UInt16)(buf & 0x7FF);                                      //Мантисса - биты 0-10
             exp = (UInt16)((buf & 0xF800) >> 11);                             //Порядок - биты 11-15
-            res = (float)Math.Pow(2, (exp - 15)) * (1 + man / 2048);            //Pow - возведение в степень
+            res = (float)Math.Pow(2, (exp - 15)) * (1 + man / 2048);          //Pow - возведение в степень
             return res;
         }
 
@@ -92,7 +98,7 @@ namespace Oblik
         /// <returns></returns>
         public static float ToSminiflo(byte[] rawdata, int index)
         {
-            UInt16 buf = ConvertToVal<UInt16>(rawdata, index);
+            UInt16 buf = ToValue<UInt16>(rawdata, index);
             UInt16 sig = (UInt16)(buf & (UInt16)1);                                             //Знак - бит 0
             UInt16 man = (UInt16)((buf & 0x7FE) >> 1);                                          //Мантисса - биты 1-10
             UInt16 exp = (UInt16)((buf & 0xF800) >> 11);                                        //Порядок - биты 11-15
@@ -108,10 +114,14 @@ namespace Oblik
         {
             DateTime BaseTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);      //Базовая точка времени 01.01.1970 00:00 GMT
             UInt32 Seconds = (UInt32)(Date - BaseTime).TotalSeconds;
-            return ConvertToBytes<uint>(Seconds);
+            return ToBytes<uint>(Seconds);
         }
 
-        /// <summary>
+
+        //----------------Старое, после проверки удалить!-----------------------//
+
+        /*
+         /// <summary>
         /// Отдает массив заданной длины, начинающийся с заданного индекса исходного массива
         /// </summary>
         /// <param name="array">Источник</param>
@@ -124,8 +134,6 @@ namespace Oblik
             Array.Copy(array, index, result, 0, len);
             return result;
         }
-
-        /*
         /// <summary>
         /// Преобразование массива байт в UInt32
         /// </summary>

@@ -10,8 +10,7 @@ namespace Oblik
         /// <summary>
         /// Размер сырой структуры, байт
         /// </summary>
-        public const int Size = 240;  
-
+        public int Size { get => 240; }
         public uint act_en_p { get; private set; }
         public uint act_en_n { get; private set; }
         public uint rea_en_p { get; private set; }
@@ -44,85 +43,104 @@ namespace Oblik
 
         public IntegralValues(byte[] rawdata)
         {
-            CheckRawSize(rawdata.Length);
+            if (rawdata.Length != Size)
+                throw new ArgumentException($"Integral Values raw data size must be {Size} bytes long");
+            
             channel = new uint[8, 4];
             
             int index = 0;
 
-            act_en_p = Utils.ConvertToVal<uint>(rawdata, index);
+            act_en_p = Convert.ToValue<uint>(rawdata, index);
             index += sizeof(uint);
-            act_en_n = Utils.ConvertToVal<uint>(rawdata, index);
+            
+            act_en_n = Convert.ToValue<uint>(rawdata, index);
             index += sizeof(uint);
-            rea_en_p = Utils.ConvertToVal<uint>(rawdata, index);
+            
+            rea_en_p = Convert.ToValue<uint>(rawdata, index);
             index += sizeof(uint);
-            rea_en_n = Utils.ConvertToVal<uint>(rawdata, index);
+            
+            rea_en_n = Convert.ToValue<uint>(rawdata, index);
             index += sizeof(uint);
-            act_en_a_p = Utils.ConvertToVal<uint>(rawdata, index);
+            
+            act_en_a_p = Convert.ToValue<uint>(rawdata, index);
             index += sizeof(uint);
-            act_en_a_n = Utils.ConvertToVal<uint>(rawdata, index);
+            
+            act_en_a_n = Convert.ToValue<uint>(rawdata, index);
             index += sizeof(uint);
-            act_en_b_p = Utils.ConvertToVal<uint>(rawdata, index);
+            
+            act_en_b_p = Convert.ToValue<uint>(rawdata, index);
             index += sizeof(uint);
-            act_en_b_n = Utils.ConvertToVal<uint>(rawdata, index);
+            
+            act_en_b_n = Convert.ToValue<uint>(rawdata, index);
             index += sizeof(uint);
-            act_en_c_p = Utils.ConvertToVal<uint>(rawdata, index);
+            
+            act_en_c_p = Convert.ToValue<uint>(rawdata, index);
             index += sizeof(uint);
-            act_en_c_n = Utils.ConvertToVal<uint>(rawdata, index);
+            
+            act_en_c_n = Convert.ToValue<uint>(rawdata, index);
             index += sizeof(uint);
-            act_en_d_p = Utils.ConvertToVal<uint>(rawdata, index);
+            
+            act_en_d_p = Convert.ToValue<uint>(rawdata, index);
             index += sizeof(uint);
-            act_en_d_n = Utils.ConvertToVal<uint>(rawdata, index);
+            
+            act_en_d_n = Convert.ToValue<uint>(rawdata, index);
             index += sizeof(uint);
-            rea_en_a_p = Utils.ConvertToVal<uint>(rawdata, index);
+            
+            rea_en_a_p = Convert.ToValue<uint>(rawdata, index);
             index += sizeof(uint);
-            rea_en_a_n = Utils.ConvertToVal<uint>(rawdata, index);
+            
+            rea_en_a_n = Convert.ToValue<uint>(rawdata, index);
             index += sizeof(uint);
-            rea_en_b_p = Utils.ConvertToVal<uint>(rawdata, index);
+            
+            rea_en_b_p = Convert.ToValue<uint>(rawdata, index);
             index += sizeof(uint);
-            rea_en_b_n = Utils.ConvertToVal<uint>(rawdata, index);
+            
+            rea_en_b_n = Convert.ToValue<uint>(rawdata, index);
             index += sizeof(uint);
-            rea_en_c_p = Utils.ConvertToVal<uint>(rawdata, index);
+            
+            rea_en_c_p = Convert.ToValue<uint>(rawdata, index);
             index += sizeof(uint);
-            rea_en_c_n = Utils.ConvertToVal<uint>(rawdata, index);
+            
+            rea_en_c_n = Convert.ToValue<uint>(rawdata, index);
             index += sizeof(uint);
-            rea_en_d_p = Utils.ConvertToVal<uint>(rawdata, index);
+            
+            rea_en_d_p = Convert.ToValue<uint>(rawdata, index);
             index += sizeof(uint);
-            rea_en_d_n = Utils.ConvertToVal<uint>(rawdata, index);
+            
+            rea_en_d_n = Convert.ToValue<uint>(rawdata, index);
             index += sizeof(uint);
+            
             for (int i = 0; i < 8; i++)
             {
                 for (int k = 0; k < 4; k++)
                 {
-                    channel[i, k] = Utils.ConvertToVal<uint>(rawdata, index);
+                    channel[i, k] = Convert.ToValue<uint>(rawdata, index);
                     index += sizeof(uint);
                 }
             }
-            exceed_a = Utils.ConvertToVal<uint>(rawdata, index);
+            
+            exceed_a = Convert.ToValue<uint>(rawdata, index);
             index += sizeof(uint);
-            exceed_b = Utils.ConvertToVal<uint>(rawdata, index);
+            
+            exceed_b = Convert.ToValue<uint>(rawdata, index);
             index += sizeof(uint);
-            exceed_c = Utils.ConvertToVal<uint>(rawdata, index);
+            
+            exceed_c = Convert.ToValue<uint>(rawdata, index);
             index += sizeof(uint);
-            exceed_d = Utils.ConvertToVal<uint>(rawdata, index);
+            
+            exceed_d = Convert.ToValue<uint>(rawdata, index);
             index += sizeof(uint);
-            max_exc_a = Utils.ConvertToVal<float>(rawdata, index);
+            
+            max_exc_a = Convert.ToValue<float>(rawdata, index);
             index += sizeof(float);
-            max_exc_b = Utils.ConvertToVal<float>(rawdata, index);
+            
+            max_exc_b = Convert.ToValue<float>(rawdata, index);
             index += sizeof(float);
-            max_exc_c = Utils.ConvertToVal<float>(rawdata, index);
+            
+            max_exc_c = Convert.ToValue<float>(rawdata, index);
             index += sizeof(float);
-            max_exc_d = Utils.ConvertToVal<float>(rawdata, index);
-        }
-
-        /// <summary>
-        /// Проверка размера сырых данных
-        /// </summary>
-        /// <param name="size">Размер сырых данных</param>
-        /// <exception cref="ArgumentException"></exception>
-        private void CheckRawSize(int size)
-        {
-            if (size != Size)
-                throw new ArgumentException($"Integral Values raw data size must be {Size} bytes long");
+            
+            max_exc_d = Convert.ToValue<float>(rawdata, index);
         }
     }
 }

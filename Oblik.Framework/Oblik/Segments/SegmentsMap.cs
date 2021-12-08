@@ -12,7 +12,7 @@ namespace Oblik
         /// <summary>
         /// Размер сырой структуры, байт
         /// </summary>
-        public const int Size = 5;
+        public int Size { get => 5; }
         /// <summary>
         /// Номер сегмента
         /// </summary>
@@ -30,24 +30,15 @@ namespace Oblik
         /// </summary>
         public int SegSize { get; private set; }
 
-        public SegmentsMapRec (byte [] rawdata)
+        public SegmentsMapRec (byte [] rawdata, int index)
         {
-            CheckRawSize(rawdata.Length);
-            Num = rawdata[0];
-            Right = (byte)(rawdata[1] & 15);
-            Access = (rawdata[1] & 128) >> 7;
-            SegSize = Utils.ConvertToVal<UInt16>(rawdata, 2);
-
-        }
-        /// <summary>
-        /// Проверка размера сырых данных
-        /// </summary>
-        /// <param name="size">Размер сырых данных</param>
-        /// <exception cref="ArgumentException"></exception>
-        private void CheckRawSize(int size)
-        {
-            if (size != Size)
+            if ((rawdata.Length - index) < Size)
                 throw new ArgumentException($"SegmentsMapRec raw data size must be {Size} bytes long");
+            
+            Num = rawdata[index];
+            Right = (byte)(rawdata[index + 1] & 15);
+            Access = (rawdata[index + 1] & 128) >> 7;
+            SegSize = Convert.ToValue<UInt16>(rawdata, 2);
         }
     }
 
@@ -56,20 +47,19 @@ namespace Oblik
     /// </summary>
     public class SegmentsMap
     {
-        public int NumSegments { get; private set; }
-        public List<SegmentsMapRec> SegMap { get; private set; }
+        public int totalSegments { get; private set; }
+        public List<SegmentsMapRec> SegmentsMapList { get; private set; }
         public SegmentsMap (byte[] rawdata)
         {
-            SegMap = new List<SegmentsMapRec>();
+            SegmentsMapList = new List<SegmentsMapRec>();
 
             //Количество записей в карте
-            NumSegments = rawdata[0];
-            int size = SegmentsMapRec.Size;
+            totalSegments = rawdata[0];
             //Заполнение карты
-            for (int i = 0; i < NumSegments; i++)
+            for (int i = 0; i < totalSegments; i++)
             {
-                SegmentsMapRec record = new SegmentsMapRec(Utils.ArrayPart(rawdata, (i * size + 1), size));
-                SegMap.Add(record);
+                SegmentsMapRec record = new SegmentsMapRec(rawdata, i * SegmentsMapRec.Size);
+                SegmentsMapList.Add(record);
             }
         }
 

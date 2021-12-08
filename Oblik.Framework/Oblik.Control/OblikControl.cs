@@ -79,7 +79,7 @@ namespace Oblik.Control
         /// </summary>
         public int DayGraphRecords
         {
-            get => Utils.ConvertToVal<UInt16>(oblikFS.ReadSegment(44, 0, 2), 0);
+            get => Convert.ToValue<UInt16>(oblikFS.ReadSegment(44, 0, 2), 0);
         }
 
         // <summary>
@@ -87,8 +87,25 @@ namespace Oblik.Control
         /// </summary>
         public int EventLogRecords
         {
-            get => Utils.ConvertToVal<UInt16>(oblikFS.ReadSegment(46, 0, 2), 0);
+            get => Convert.ToValue<UInt16>(oblikFS.ReadSegment(46, 0, 2), 0);
         }
+
+        /// <summary>
+        /// Протокол событий
+        /// </summary>
+        /// <param name="records">Прочитать записей</param>
+        /// <param name="index">Начальная запись</param>
+        /// <returns></returns>
+        public List<EventLogRow> EventLogList(int records, int index)
+        {
+            if ((index + records) > 800)
+                throw new ArgumentException("Index and records combination are out of range");
+
+            List<EventLogRow> eventLog = new List<EventLogRow>();
+
+        }
+
+        private List<T> GetRecordsPack 
 
         /// <summary>
         /// Суточный график
@@ -98,24 +115,24 @@ namespace Oblik.Control
         /// <returns></returns>
         public List<DayGraphRow> DayGraphList(int records, int index)
         {
-            if ((index + records) > 1750)            
+            if ((index + records) > 1750)
                 throw new ArgumentException("Index and records combination are out of range");
-            
+
             List<DayGraphRow> dayGraph = new List<DayGraphRow>();
-            int rec_size = DayGraphRow.Size;
-            int max_packet = 255 / rec_size;                            //Максимально записей в 1 пакете
-            int offset = index * rec_size;
-            int recs_left = records;                                    //Осталось прочитать строк
-            while (recs_left > 0)
+            int recordSize = DayGraphRow.Size;
+            int maxPacketSize = 255 / recordSize;                         //Максимально записей в 1 пакете
+            int offset = index * recordSize;
+            int recordsLeft = records;                                    //Осталось прочитать строк
+            while (recordsLeft > 0)
             {
-                int packet = (recs_left <= max_packet) ? (recs_left) : (max_packet);
-                byte[] rawdata = oblikFS.ReadSegment(45, offset, packet * rec_size);
-                for (int i = 0; i < packet; i++ )
+                int packet = (recordsLeft <= maxPacketSize) ? (recordsLeft) : (maxPacketSize);
+                byte[] rawdata = oblikFS.ReadSegment(45, offset, packet * recordSize);
+                for (int i = 0; i < packet; i++)
                 {
-                    dayGraph.Add(new DayGraphRow(Utils.ArrayPart(rawdata, i * rec_size, rec_size)));
+                    dayGraph.Add(new DayGraphRow(rawdata, i * recordSize));
                 }
-                recs_left -= packet;
-                offset += packet * rec_size;
+                recordsLeft -= packet;
+                offset += packet * recordSize;
             }
             return dayGraph;
         }
@@ -147,8 +164,8 @@ namespace Oblik.Control
         /// </summary>
         public DateTime CurrentTimeUTC
         {
-            get => Utils.ToUTCTime(oblikFS.ReadSegment(64, 0, 4), 0);
-            set => oblikFS.WriteSegment(65, 0, Utils.ToTime(value));
+            get => Convert.ToUTCTime(oblikFS.ReadSegment(64, 0, 4), 0);
+            set => oblikFS.WriteSegment(65, 0, Convert.ToTime(value));
         }
 
         /// <summary>
@@ -238,7 +255,7 @@ namespace Oblik.Control
         /// </summary>
         public int HalfHourGraphPtr
         {
-            get => (int)Utils.ConvertToVal<byte>(oblikFS.ReadSegment(48, 0, 1), 0);
+            get => (int)Convert.ToValue<byte>(oblikFS.ReadSegment(48, 0, 1), 0);
         }
     }
 }

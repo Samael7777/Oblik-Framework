@@ -99,7 +99,7 @@ namespace Oblik
         private void ToRaw()
         {
             serialize[0] = Addr;
-            Utils.ConvertToBytes(Divisor).CopyTo(serialize, 1);
+            Convert.ToBytes(Divisor).CopyTo(serialize, 1);
         }
         /// <summary>
         /// Пересчет делителя от скорости

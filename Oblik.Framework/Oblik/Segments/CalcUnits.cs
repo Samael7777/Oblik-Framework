@@ -11,7 +11,7 @@ namespace Oblik
         /// <summary>
         /// Размер сырой структуры, байт
         /// </summary>
-        public const int Size = 57;
+        public int Size { get => 57;}
         public float Ener_fct { get; set; }
         public float Powr_fct { get; set; }
         public float Curr_fct { get; set; }
@@ -69,16 +69,16 @@ namespace Oblik
         {
             int index = 0;
 
-            Utils.ConvertToBytes(Ener_fct).CopyTo(serialize, index);
+            Convert.ToBytes(Ener_fct).CopyTo(serialize, index);
             index += sizeof(float);
 
-            Utils.ConvertToBytes(Powr_fct).CopyTo(serialize, index);
+            Convert.ToBytes(Powr_fct).CopyTo(serialize, index);
             index += sizeof(float);
 
-            Utils.ConvertToBytes(Curr_fct).CopyTo(serialize, index);
+            Convert.ToBytes(Curr_fct).CopyTo(serialize, index);
             index += sizeof(float);
 
-            Utils.ConvertToBytes(Volt_fct).CopyTo(serialize, index);
+            Convert.ToBytes(Volt_fct).CopyTo(serialize, index);
             index += sizeof(float);
 
             //reserved1
@@ -96,31 +96,31 @@ namespace Oblik
             serialize[index] = (byte)(Volt_unit);
             index++;
 
-            Utils.ConvertToBytes(Curr_1w).CopyTo(serialize, index);
+            Convert.ToBytes(Curr_1w).CopyTo(serialize, index);
             index += sizeof(float);
 
-            Utils.ConvertToBytes(Curr_2w).CopyTo(serialize, index);
+            Convert.ToBytes(Curr_2w).CopyTo(serialize, index);
             index += sizeof(float);
 
-            Utils.ConvertToBytes(Volt_1w).CopyTo(serialize, index);
+            Convert.ToBytes(Volt_1w).CopyTo(serialize, index);
             index += sizeof(float);
 
-            Utils.ConvertToBytes(Volt_2w).CopyTo(serialize, index);
+            Convert.ToBytes(Volt_2w).CopyTo(serialize, index);
             index += sizeof(float);
 
             serialize[index] = Save_const;
             index++;
 
-            Utils.ConvertToBytes(Pwr_lim_A).CopyTo(serialize, index);
+            Convert.ToBytes(Pwr_lim_A).CopyTo(serialize, index);
             index += sizeof(float);
 
-            Utils.ConvertToBytes(Pwr_lim_B).CopyTo(serialize, index);
+            Convert.ToBytes(Pwr_lim_B).CopyTo(serialize, index);
             index += sizeof(float);
 
-            Utils.ConvertToBytes(Pwr_lim_C).CopyTo(serialize, index);
+            Convert.ToBytes(Pwr_lim_C).CopyTo(serialize, index);
             index += sizeof(float);
 
-            Utils.ConvertToBytes(Pwr_lim_D).CopyTo(serialize, index);
+            Convert.ToBytes(Pwr_lim_D).CopyTo(serialize, index);
         }
         
         /// <summary>
@@ -129,16 +129,16 @@ namespace Oblik
         private void FromRaw()
         {
             int index = 0;
-            Ener_fct = Utils.ConvertToVal<float>(serialize, index);
+            Ener_fct = Convert.ToValue<float>(serialize, index);
             index += sizeof(float);
 
-            Powr_fct = Utils.ConvertToVal<float>(serialize, index);
+            Powr_fct = Convert.ToValue<float>(serialize, index);
             index += sizeof(float);
 
-            Curr_fct = Utils.ConvertToVal<float>(serialize, index);
+            Curr_fct = Convert.ToValue<float>(serialize, index);
             index += sizeof(float);
 
-            Volt_fct = Utils.ConvertToVal<float>(serialize, index);
+            Volt_fct = Convert.ToValue<float>(serialize, index);
             index += sizeof(float);
 
             //reserved1
@@ -156,31 +156,31 @@ namespace Oblik
             Volt_unit = (sbyte)serialize[index];
             index++;
 
-            Curr_1w = Utils.ConvertToVal<float>(serialize, index);
+            Curr_1w = Convert.ToValue<float>(serialize, index);
             index += sizeof(float);
 
-            Curr_2w = Utils.ConvertToVal<float>(serialize, index);
+            Curr_2w = Convert.ToValue<float>(serialize, index);
             index += sizeof(float);
 
-            Volt_1w = Utils.ConvertToVal<float>(serialize, index);
+            Volt_1w = Convert.ToValue<float>(serialize, index);
             index += sizeof(float);
 
-            Volt_2w = Utils.ConvertToVal<float>(serialize, index);
+            Volt_2w = Convert.ToValue<float>(serialize, index);
             index += sizeof(float);
 
             Save_const = serialize[index];
             index++;
 
-            Pwr_lim_A = Utils.ConvertToVal<float>(serialize, index);
+            Pwr_lim_A = Convert.ToValue<float>(serialize, index);
             index += sizeof(float);
 
-            Pwr_lim_B = Utils.ConvertToVal<float>(serialize, index);
+            Pwr_lim_B = Convert.ToValue<float>(serialize, index);
             index += sizeof(float);
 
-            Pwr_lim_C = Utils.ConvertToVal<float>(serialize, index);
+            Pwr_lim_C = Convert.ToValue<float>(serialize, index);
             index += sizeof(float);
 
-            Pwr_lim_D = Utils.ConvertToVal<float>(serialize, index);
+            Pwr_lim_D = Convert.ToValue<float>(serialize, index);
         }
 
         /// <summary>

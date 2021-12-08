@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Oblik.Driver;
 
 namespace Oblik.FS
@@ -61,6 +62,56 @@ namespace Oblik.FS
             {
                 connectionParams = value;
                 oblikDriver.CurrentConnectionParams = value;
+            }
+        }
+
+        /// <summary>
+        /// Чтение части сегмента счетчика
+        /// </summary>
+        /// <param name="segment">Сегмент счетчика</param>
+        /// <param name="offset">Смещение относительно начала сегмента</param>
+        /// <param name="len">Количество данных для чтения</param>
+        /// <param name="data">Полученные данные</param>
+        /// <returns>Успех операции</returns>
+        public byte[] ReadSegment(int segment, int offset, int len)
+        {
+            byte[] result = new byte[0];
+            PerformFrame((byte)segment, (ushort)offset, (byte)len, Access.Read);
+            byte[] answer = oblikDriver.Request(l1);
+            //Проверка на ошибки L2
+            if (answer[0] != 0)
+            {
+                DecodeSegmentError(answer[2]);
+            }
+
+            Array.Copy(answer, 2, result, 0, answer[1]);
+            return result;
+        }
+
+        /// <summary>
+        /// Запись в сегмент счетчика
+        /// </summary>
+        /// <param name="segment">Сегмент счетчика</param>
+        /// <param name="offset">Смещение относительно начала сегмента</param>
+        /// <param name="data">Данные для записи</param>
+        /// <returns>Успех операции</returns>
+        public void WriteSegment(int segment, int offset, byte[] data)
+        {
+            //Обрезка аргументов
+            segment &= 0xFF;
+            offset &= 0xFFFF;
+
+            //Проверка на наличие данных для записи
+            if (data == null)
+            {
+                throw new ArgumentNullException(nameof(data));
+            }
+            PerformFrame((byte)segment, (ushort)offset, (byte)data.Length, Access.Write, data);
+            byte[] answer = oblikDriver.Request(l1);
+            //Проверка на ошибки L2
+            if (answer[0] != 0)
+            {
+                DecodeSegmentError(answer[2]);
             }
         }
     }
