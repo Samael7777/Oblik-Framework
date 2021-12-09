@@ -64,6 +64,7 @@
     <Compile Include="Oblik.Driver\IO.cs" />
     <Compile Include="Oblik.Driver\OblikDriver.cs" />
     <Compile Include="Oblik\Convert.cs" />
+    <Compile Include="Oblik\SminiFlo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Oblik.FS\L2Frames.cs" />
   </ItemGroup>

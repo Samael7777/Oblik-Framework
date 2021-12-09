@@ -24,12 +24,6 @@ namespace Oblik
             T result = default;
             int size = Marshal.SizeOf(result);
 
-            if (typeof(T) == typeof(DateTime))
-            {
-                DateTime baseTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-                return (T)baseTime;
-            }
-
             if ((rawdata.Length - index) < size)
                 throw new ArgumentException("Not enough data for conversion");
 
