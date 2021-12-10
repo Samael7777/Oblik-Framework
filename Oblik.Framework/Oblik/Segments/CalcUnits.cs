@@ -11,7 +11,7 @@ namespace Oblik
         /// <summary>
         /// Размер сырой структуры, байт
         /// </summary>
-        public int Size { get => 57;}
+        public static int Size { get => 57; }
         public float Ener_fct { get; set; }
         public float Powr_fct { get; set; }
         public float Curr_fct { get; set; }
@@ -29,7 +29,10 @@ namespace Oblik
         public sbyte Powr_unit { get; set; }
         public sbyte Curr_unit { get; set; }
         public sbyte Volt_unit { get; set; }
-
+        public float ener_cf { get => (float)Math.Pow(10, (Ener_unit - 6)); }
+        public float powr_cf { get => (float)Math.Pow(10, Powr_unit); }
+        public float curr_cf { get => (float)Math.Pow(10, Curr_unit); }
+        public float volt_cf { get => (float)Math.Pow(10, (Volt_unit - 1)); }
         public byte[] RawData
         {
             get

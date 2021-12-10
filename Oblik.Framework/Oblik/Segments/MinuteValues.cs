@@ -10,7 +10,7 @@ namespace Oblik
         /// <summary>
         /// Размер сырой структуры, байт
         /// </summary>
-        public int Size { get => 40; }
+        public static int Size { get => 40; }
         public float act_ener { get; private set; }
         public float rea_ener { get; private set; }
         public uint[] channel { get; private set; }

@@ -11,7 +11,7 @@ namespace Oblik
         /// <summary>
         /// Размер сырой структуры, байт
         /// </summary>
-        public int Size { get => 28; }
+        public static int Size { get => 28; }
         /// <summary>
         /// Реактивная энергия "+" за период сохранения
         /// </summary>

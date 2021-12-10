@@ -12,7 +12,7 @@ namespace Oblik
         /// <summary>
         /// Размер сырой структуры, байт
         /// </summary>
-        public int Size { get => 5; }
+        public static int Size { get => 5; }
         /// <summary>
         /// Номер сегмента
         /// </summary>

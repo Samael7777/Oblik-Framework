@@ -13,7 +13,7 @@ namespace Oblik
         /// <summary>
         /// Размер сырой структуры, байт
         /// </summary>
-        public int Size { get => 24; }
+        public static int Size { get => 24; }
         public float Curr1 { get; private set; }
         public float Curr2 { get; private set; }
         public float Curr3 { get; private set; }

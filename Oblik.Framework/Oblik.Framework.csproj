@@ -53,6 +53,7 @@
     <Compile Include="Oblik.FS\L2ErrorDecoder.cs" />
     <Compile Include="Oblik.FS\OblikFS.cs" />
     <Compile Include="Oblik\Segments\EventLogRow.cs" />
+    <Compile Include="Oblik\Segments\HalfHourLogRow.cs" />
     <Compile Include="Oblik\Segments\HalfHourValues.cs" />
     <Compile Include="Oblik\Segments\IntegralValues.cs" />
     <Compile Include="Oblik\Segments\Segment.cs" />

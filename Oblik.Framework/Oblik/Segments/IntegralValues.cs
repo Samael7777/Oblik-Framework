@@ -10,7 +10,7 @@ namespace Oblik
         /// <summary>
         /// Размер сырой структуры, байт
         /// </summary>
-        public int Size { get => 240; }
+        public static int Size { get => 240; }
         public uint act_en_p { get; private set; }
         public uint act_en_n { get; private set; }
         public uint rea_en_p { get; private set; }

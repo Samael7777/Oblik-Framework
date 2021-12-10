@@ -23,10 +23,7 @@ namespace Oblik
 
         public static SminiFlo ToSminiFlo(byte[] rawdata, int index)
         {
-            byte[] buffer = new byte[2];
-            Array.Copy(rawdata, index, buffer, 0, 2);
-            Array.Reverse(buffer);
-            return ToSminiFlo(BitConverter.ToUInt16(buffer, 0));
+            return ToSminiFlo(BitConverter.ToUInt16(rawdata, index));
         }
 
         public static ushort GetBits(SminiFlo value)
@@ -35,9 +32,7 @@ namespace Oblik
         }
         public static byte[] GetBytes(SminiFlo value)
         {
-            byte[] buffer = BitConverter.GetBytes(value.Value);
-            Array.Reverse(buffer);
-            return buffer;
+            return BitConverter.GetBytes(value.Value);
         }
         
         #endregion
@@ -54,10 +49,15 @@ namespace Oblik
             return (float)(Math.Pow(2, exponent - 15) * (1 + (mantissa / 2048)) * Math.Pow(-1, signum));
         }
 
-        public static SminiFlo(float value)
+        /*
+        public static SminiFlo ToSminiFlo(float value)
         {
-            
-        }
+            uint bits = BitConverter.ToUInt32(BitConverter.GetBytes(value), 0);
+            int signum = (int)((bits & 0x80000000) >> 31);
+            int exponent = (int)((bits & 0x7FC00000) >> 23) - 127;
+            int mantissa = (int)(bits & 0x7FFFFF);
 
+        }
+        */
     }
 }
