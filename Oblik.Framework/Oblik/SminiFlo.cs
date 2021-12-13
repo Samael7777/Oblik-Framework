@@ -1,7 +1,5 @@
 ﻿using System;
 
-
-
 namespace Oblik
 {
     public struct SminiFlo //: IComparable, IFormattable, IConvertible, IComparable<SminiFlo>, IEquatable<SminiFlo>
@@ -9,13 +7,16 @@ namespace Oblik
         internal ushort Value;
 
         #region Constructors
+
         public SminiFlo(ushort value)
         {
-            Value = value;           
+            Value = value;
         }
-        #endregion
+
+        #endregion Constructors
 
         #region BitConverter & Math methods for Half
+
         public static SminiFlo ToSminiFlo(ushort bits)
         {
             return new SminiFlo { Value = bits };
@@ -30,15 +31,15 @@ namespace Oblik
         {
             return value.Value;
         }
+
         public static byte[] GetBytes(SminiFlo value)
         {
             return BitConverter.GetBytes(value.Value);
         }
-        
-        #endregion
 
-
+        #endregion BitConverter & Math methods for Half
     }
+
     public static class SminifloHelper
     {
         public static float ToSingle(SminiFlo value)
@@ -56,7 +57,6 @@ namespace Oblik
             int signum = (int)((bits & 0x80000000) >> 31);
             int exponent = (int)((bits & 0x7FC00000) >> 23) - 127;
             int mantissa = (int)(bits & 0x7FFFFF);
-
         }
         */
     }

@@ -1,6 +1,5 @@
 ﻿using System;
 
-
 namespace Oblik
 {
     /// <summary>
@@ -12,26 +11,32 @@ namespace Oblik
         /// Размер сырой структуры, байт
         /// </summary>
         public static int Size { get => 28; }
+
         /// <summary>
         /// Реактивная энергия "+" за период сохранения
         /// </summary>
         public float Rea_en_p { get; private set; }
+
         /// <summary>
         /// Время записи
         /// </summary>
         public DateTime Time { get; private set; }
+
         /// <summary>
         /// Активная энергия "+" за период сохранения
         /// </summary>
         public float Act_en_p { get; private set; }
+
         /// <summary>
         /// Активная энергия "-" за период сохранения
         /// </summary>
         public float Act_en_n { get; private set; }
+
         /// <summary>
         /// Реактивная энергия "-" за период сохранения
         /// </summary>
         public float Rea_en_n { get; private set; }
+
         /// <summary>
         /// Количество импульсов по каналам
         /// </summary>
@@ -62,7 +67,7 @@ namespace Oblik
 
             Rea_en_n = Convert.ToUminiflo(rawdata, index);
             index += 2;
-            
+
             Channel = new int[8];
             for (int i = 0; i <= 7; i++)
             {

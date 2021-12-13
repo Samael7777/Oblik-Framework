@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Text;
 
 namespace Oblik
 {
@@ -13,9 +11,9 @@ namespace Oblik
         private byte[] pwdBytes;
 
         /// <summary>
-        /// Номер порта счетчика    
+        /// Номер порта счетчика
         /// </summary>
-        public byte Port { get; set; }     
+        public byte Port { get; set; }
 
         /// <summary>
         /// Таймаут, мс
@@ -33,10 +31,17 @@ namespace Oblik
         public byte Address { get; set; }
 
         /// <summary>
+        /// Количество повторов соединения
+        /// </summary>
+        public int Repeats { get; set; }
+
+        /// <summary>
         /// Пароль к счетчику
         /// </summary>
-        public string Password { get => password;
-            set 
+        public string Password
+        {
+            get => password;
+            set
             {
                 //Очистка от мусора
                 password = value.Trim();
@@ -44,7 +49,7 @@ namespace Oblik
                 if (password.Length >= 8)
                 {
                     password.Substring(0, 8);
-                } 
+                }
                 else
                 {
                     password.PadLeft(8, (char)0);
@@ -52,15 +57,14 @@ namespace Oblik
                 //Преобразование в массив байт
                 pwdBytes = new byte[8];
                 pwdBytes = Encoding.Default.GetBytes(password);
-            } 
+            }
         }
-        
+
         /// <summary>
         /// Пароль в виде массива байт
         /// </summary>
         public byte[] PasswordArray { get => pwdBytes; }
-      
-         
+
         /// <summary>
         /// Уровень доступа к сегментам счетчика
         /// </summary>
@@ -75,8 +79,10 @@ namespace Oblik
             Baudrate = 9600;
             Timeout = 500;
             Address = 0;
-            Password = "";
+            password = "";
             User = UserLevel.Energo;
+            Repeats = 5;
+            pwdBytes = new byte[8];
         }
     }
 }

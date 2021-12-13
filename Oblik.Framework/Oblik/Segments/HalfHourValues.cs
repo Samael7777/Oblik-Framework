@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Oblik
 {
@@ -11,6 +8,7 @@ namespace Oblik
         /// Размер сырой структуры, байт
         /// </summary>
         public static int Size { get => 80; }
+
         public float act_pw_cur { get; private set; }
         public float rea_pw_cur { get; private set; }
         public uint[] channel_cur { get; private set; }
@@ -25,26 +23,26 @@ namespace Oblik
 
             channel_cur = new uint[8];
             channel_old = new uint[8];
-            
+
             int index = 0;
             act_pw_cur = Convert.ToValue<float>(rawdata, index);
             index += sizeof(float);
-            
+
             rea_pw_cur = Convert.ToValue<float>(rawdata, index);
             index += sizeof(float);
-            
+
             for (int i = 0; i < 8; i++)
             {
                 channel_cur[i] = Convert.ToValue<uint>(rawdata, index);
                 index += sizeof(uint);
             }
-            
+
             act_pw_old = Convert.ToValue<float>(rawdata, index);
             index += sizeof(float);
-            
+
             rea_pw_old = Convert.ToValue<float>(rawdata, index);
             index += sizeof(float);
-            
+
             for (int i = 0; i < 8; i++)
             {
                 channel_old[i] = Convert.ToValue<uint>(rawdata, index);

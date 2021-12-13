@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-
 namespace Oblik
 {
     /// <summary>
@@ -13,28 +12,32 @@ namespace Oblik
         /// Размер сырой структуры, байт
         /// </summary>
         public static int Size { get => 5; }
+
         /// <summary>
         /// Номер сегмента
         /// </summary>
         public int Num { get; private set; }
+
         /// <summary>
         /// Права доступа
         /// </summary>
         public int Right { get; private set; }
+
         /// <summary>
         /// Доступ: 0 - чтение, 1 - запись
         /// </summary>
         public int Access { get; private set; }
+
         /// <summary>
         /// Размер сегмента, байт
         /// </summary>
         public int SegSize { get; private set; }
 
-        public SegmentsMapRec (byte [] rawdata, int index)
+        public SegmentsMapRec(byte[] rawdata, int index)
         {
             if ((rawdata.Length - index) < Size)
                 throw new ArgumentException($"SegmentsMapRec raw data size must be {Size} bytes long");
-            
+
             Num = rawdata[index];
             Right = (byte)(rawdata[index + 1] & 15);
             Access = (rawdata[index + 1] & 128) >> 7;
@@ -49,7 +52,8 @@ namespace Oblik
     {
         public int totalSegments { get; private set; }
         public List<SegmentsMapRec> SegmentsMapList { get; private set; }
-        public SegmentsMap (byte[] rawdata)
+
+        public SegmentsMap(byte[] rawdata)
         {
             SegmentsMapList = new List<SegmentsMapRec>();
 
@@ -62,6 +66,5 @@ namespace Oblik
                 SegmentsMapList.Add(record);
             }
         }
-
     }
 }

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Oblik
 {
@@ -14,6 +11,7 @@ namespace Oblik
         /// Размер сырой структуры, байт
         /// </summary>
         public static int Size { get => 24; }
+
         public float Curr1 { get; private set; }
         public float Curr2 { get; private set; }
         public float Curr3 { get; private set; }
@@ -23,7 +21,7 @@ namespace Oblik
         public float Act_pw { get; private set; }
         public float Rea_pw { get; private set; }
         public ushort Freq { get; private set; }
-        
+
         public CurrentValues(byte[] rawdata)
         {
             if (rawdata.Length != Size)
@@ -58,8 +56,6 @@ namespace Oblik
             index += 2;
 
             Freq = Convert.ToValue<UInt16>(rawdata, index);
-
         }
-   
     }
 }

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Oblik
 {
@@ -14,6 +11,7 @@ namespace Oblik
         /// Размер сырой структуры, байт
         /// </summary>
         public const int Size = 3;
+
         /// <summary>
         /// Массив сырых данных сегмента
         /// </summary>
@@ -23,7 +21,7 @@ namespace Oblik
         /// Сетевой адрес по протоколу RS-48
         /// </summary>
         public byte Addr { get; set; }
-        
+
         /// <summary>
         /// Скорость соединения, делитель от 115200
         /// </summary>
@@ -36,19 +34,20 @@ namespace Oblik
                 Div2Speed();
             }
         }
-        
+
         /// <summary>
         /// Скорость соединения
         /// </summary>
-        public int Speed 
-        { 
-            get => Speed; 
+        public int Speed
+        {
+            get => Speed;
             set
             {
                 Speed = value;
                 Speed2Div();
             }
         }
+
         /// <summary>
         /// Поток байт, соответствующий структуре
         /// </summary>
@@ -66,10 +65,12 @@ namespace Oblik
                 FromRaw();
             }
         }
+
         public NetworkConfig()
         {
             serialize = new byte[Size];
         }
+
         public NetworkConfig(byte[] rawdata) : this()
         {
             CheckRawSize(rawdata.Length);
@@ -101,6 +102,7 @@ namespace Oblik
             serialize[0] = Addr;
             Convert.ToBytes(Divisor).CopyTo(serialize, 1);
         }
+
         /// <summary>
         /// Пересчет делителя от скорости
         /// </summary>

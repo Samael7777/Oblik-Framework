@@ -1,19 +1,16 @@
 ﻿using System;
-using System.IO;
 using System.Runtime.InteropServices;
 
 namespace Oblik
 {
-
     /// <summary>
-    /// Группа преобразователей массива байт в различные типы данных и наоборот. 
+    /// Группа преобразователей массива байт в различные типы данных и наоборот.
     /// Принимается, что старший байт имеет младший адрес (big-endian)
     /// </summary>
     public static class Convert
     {
-
         /// <summary>
-        /// Преобразование массива байт (Big-Endian) в значение 
+        /// Преобразование массива байт (Big-Endian) в значение
         /// </summary>
         /// <typeparam name="T">Тип значения</typeparam>
         /// <param name="rawdata">Массив байт</param>
@@ -43,7 +40,7 @@ namespace Oblik
         /// <typeparam name="T">тип данных на входе</typeparam>
         /// <param name="value"> значение</param>
         /// <returns>Массив байт (Big-Endian)</returns>
-        public static byte[] ToBytes<T>(T value) where T: struct
+        public static byte[] ToBytes<T>(T value) where T : struct
         {
             int size = Marshal.SizeOf(typeof(T));
             byte[] result = new byte[size];
@@ -68,7 +65,7 @@ namespace Oblik
         }
 
         /// <summary>
-        /// Преобразование массива байт в uminiflo 
+        /// Преобразование массива байт в uminiflo
         /// </summary>
         /// <param name="rawdata">Массив байт</param>
         /// <param name="index">Начальный индекс</param>
@@ -110,7 +107,6 @@ namespace Oblik
             UInt32 Seconds = (UInt32)(Date - BaseTime).TotalSeconds;
             return ToBytes<uint>(Seconds);
         }
-
 
         //----------------Старое, после проверки удалить!-----------------------//
 
@@ -281,5 +277,4 @@ namespace Oblik
         }
         */
     }
-
 }
