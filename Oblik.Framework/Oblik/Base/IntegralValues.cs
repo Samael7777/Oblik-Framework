@@ -1,14 +1,15 @@
 ﻿using System;
+using Oblik.FS;
 
 namespace Oblik
 {
-    public class IntegralValues
+    public class IntegralValues : Segment
     {
-        /// <summary>
-        /// Размер сырой структуры, байт
-        /// </summary>
-        public static int Size { get => 240; }
+        public override int Size { get => 240; }
+        public override int ReadSegmentID { get => 0; }
+        public override int WriteSegmentID { get => 0; }
 
+        #region Values
         public uint act_en_p { get; private set; }
         public uint act_en_n { get; private set; }
         public uint rea_en_p { get; private set; }
@@ -38,14 +39,23 @@ namespace Oblik
         public float max_exc_b { get; private set; }
         public float max_exc_c { get; private set; }
         public float max_exc_d { get; private set; }
-
-        public IntegralValues(byte[] rawdata)
+        #endregion
+        
+        private void Init()
         {
-            if (rawdata.Length != Size)
-                throw new ArgumentException($"Integral Values raw data size must be {Size} bytes long");
-
             channel = new uint[8, 4];
+        }
+        public IntegralValues(ConnectionParams connectionParams) : base(connectionParams) 
+        {
+            Init();
+        }
+        public IntegralValues(OblikFS oblikFS) : base(oblikFS) 
+        {
+            Init();
+        }
 
+        protected override void FromRaw()
+        {
             int index = 0;
 
             act_en_p = Convert.ToValue<uint>(rawdata, index);

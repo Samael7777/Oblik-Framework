@@ -25,6 +25,8 @@
         L2DGCleanError = 17,
         L2PwdChngError = 18,
         L2UnkError = 19,
+        NotWriteableSegError = 20,
+        NotReadableSegError = 21,
     }
 
     /// <summary>

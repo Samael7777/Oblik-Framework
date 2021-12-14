@@ -4,7 +4,7 @@ namespace Oblik
 {
     public class EventLogRow
     {
-        public static int Size { get => 5; }
+        public int Size { get => 5; }
         public DateTime Time { get; private set; }
         public int Code { get; private set; }
 

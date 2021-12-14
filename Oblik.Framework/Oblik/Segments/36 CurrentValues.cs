@@ -1,17 +1,19 @@
 ﻿using System;
+using Oblik.FS;
 
 namespace Oblik
 {
     /// <summary>
     /// Текущие измерения
     /// </summary>
-    public class CurrentValues
+    public class CurrentValues : Segment
     {
-        /// <summary>
-        /// Размер сырой структуры, байт
-        /// </summary>
-        public static int Size { get => 24; }
-
+       
+        public override int Size { get => 24; }
+        public override int ReadSegmentID { get => 36; }
+        public override int WriteSegmentID { get => 0; }
+        
+        #region Values
         public float Curr1 { get; private set; }
         public float Curr2 { get; private set; }
         public float Curr3 { get; private set; }
@@ -21,12 +23,13 @@ namespace Oblik
         public float Act_pw { get; private set; }
         public float Rea_pw { get; private set; }
         public ushort Freq { get; private set; }
+        #endregion
 
-        public CurrentValues(byte[] rawdata)
+        public CurrentValues(OblikFS oblikFS) : base(oblikFS) { }
+        public CurrentValues(ConnectionParams connectionParams) : base(connectionParams) { }
+
+        protected override void ToRaw()
         {
-            if (rawdata.Length != Size)
-                throw new ArgumentException($"CurrentValues raw data size must be {Size} bytes long");
-
             int index = 0;
             Curr1 = Convert.ToUminiflo(rawdata, index);
             index += 2;

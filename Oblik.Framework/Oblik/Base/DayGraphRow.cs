@@ -10,8 +10,9 @@ namespace Oblik
         /// <summary>
         /// Размер сырой структуры, байт
         /// </summary>
-        public static int Size { get => 28; }
+        public int RecordSize { get => 28; }
 
+        #region Values
         /// <summary>
         /// Реактивная энергия "+" за период сохранения
         /// </summary>
@@ -41,18 +42,15 @@ namespace Oblik
         /// Количество импульсов по каналам
         /// </summary>
         public int[] Channel { get; private set; }
+        #endregion
 
         /// <summary>
         /// Конструктор с преобразованим массива байт в строку суточного графика
         /// </summary>
         /// <param name="rawdata">Массив байт</param>
         /// <param name="index">Начальный индекс</param>
-        public DayGraphRow(byte[] rawdata, int index)
+        public DayGraphRow(byte[] rawdata, int index) 
         {
-            //Проверка корректности входных данных
-            if ((rawdata.Length - index) < Size)
-                throw new ArgumentException($"DayGraphRow raw data size must be {Size} bytes long");
-
             Time = Convert.ToUTCTime(rawdata, index).ToLocalTime();
             index += 4;
 

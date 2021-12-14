@@ -9,8 +9,8 @@ namespace Oblik
     public class CalcUnits : Segment
     {
         public override int Size { get => 57; }
-        public override int ReadSegment { get => 56; }
-        public override int WriteSegment { get => 57; }
+        public override int ReadSegmentID { get => 56; }
+        public override int WriteSegmentID { get => 57; }
 
         #region Segment values
 
@@ -33,19 +33,16 @@ namespace Oblik
         public sbyte Volt_unit { get; set; }
 
         #endregion Segment values
-
+        #region Calculated values
         public float ener_cf { get => (float)Math.Pow(10, (Ener_unit - 6)); }
         public float powr_cf { get => (float)Math.Pow(10, Powr_unit); }
         public float curr_cf { get => (float)Math.Pow(10, Curr_unit); }
         public float volt_cf { get => (float)Math.Pow(10, (Volt_unit - 1)); }
+        #endregion
 
-        public CalcUnits(ConnectionParams connectionParams) : base(connectionParams)
-        {
-        }
+        public CalcUnits(ConnectionParams connectionParams) : base(connectionParams) { }
 
-        public CalcUnits(OblikFS oblikFS) : base(oblikFS)
-        {
-        }
+        public CalcUnits(OblikFS oblikFS) : base(oblikFS) { }
 
         /// <summary>
         /// Преобразование структуры параметров вычислений в массив байт
