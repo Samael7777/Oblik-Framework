@@ -10,9 +10,9 @@ namespace Oblik
     {
         private DateTime time;
 
-        public override int Size { get => 4; }
-        public override int ReadSegmentID { get => 64; }
-        public override int WriteSegmentID { get => 65; }
+        public new static int Size { get => 4; }
+        public new static int ReadSegmentID { get => 64; }
+        public new static int WriteSegmentID { get => 65; }
         public DateTime Time
         {
             get

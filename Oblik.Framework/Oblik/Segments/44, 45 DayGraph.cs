@@ -6,17 +6,18 @@ namespace Oblik
 {
     public class DayGraph : Log
     {
-        public override int Size { get => 49000; }
-        public override int ReadSegmentID { get => 45; }
-        public override int WriteSegmentID { get => 0; }
-        public int ClearSegmentID { get => 88; }
-        public int PointerSegmentID { get => 44; }
+        public new static int Size { get => 49000; }
+        public new static int ReadSegmentID { get => 45; }
+        public new static int WriteSegmentID { get => 0; }
+        public new static int ClearSegmentID { get => 88; }
+        public new static int PointerSegmentID { get => 44; }
         public override int NumberOfRecords
         {
             get => Convert.ToValue<UInt16>(oblikFS.ReadSegment(PointerSegmentID, 0, 2), 0);
         }
-        public override int MaxRecords { get => 1750; }
-        public override int RecordSize { get => 28; }
+        public new static int MaxRecords { get => 1750; }
+        public new static int RecordSize { get => 28; }
+       
         public List<DayGraphRow> Records { get; protected set; }
         public DayGraph(OblikFS oblikFS) : base(oblikFS) 
         {
@@ -26,7 +27,7 @@ namespace Oblik
         {
             Init();
         }
-        protected override void CleanLog()
+        protected override void CleanRecords()
         {
             Records.Clear();
         }
@@ -34,21 +35,9 @@ namespace Oblik
         {
             Records = new List<DayGraphRow>();
         }
-        public override void Read()
-        {
-            int currentRecords = NumberOfRecords;
-            GetLastRecords(currentRecords);
-        }
         protected override void AddRecord(byte[] rawdata, int index)
         {
             Records.Add(new DayGraphRow(rawdata, index));
-        }
-        public void CleanDayGraph()
-        {
-            byte[] req = new byte[2];
-            req[1] = oblikFS.CurrentConnectionParams.Address;
-            req[0] = (byte)(~req[1]);
-            oblikFS.WriteSegment(ClearSegmentID, 0, req);
         }
     }
 }

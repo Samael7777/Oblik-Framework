@@ -2,18 +2,16 @@
 
 namespace Oblik
 {
-    public class HalfHourLogRow
+    public class HalfHourGraphRow : Row
     {
-        public static int Size { get => 20; }
+        public new static int RecordSize { get => 20; }
+
         public float act_ener { get; private set; }
         public float rea_ener { get; private set; }
         public UInt16[] channel { get; private set; }
 
-        public HalfHourLogRow(byte[] rawdata, int index)
+        public HalfHourGraphRow(byte[] rawdata, int index) : base (rawdata, index)
         {
-            if ((rawdata.Length - index) < Size)
-                throw new ArgumentException($"Raw data size must be {Size} bytes long");
-
             channel = new UInt16[8];
 
             act_ener = Convert.ToSminiflo(rawdata, index);

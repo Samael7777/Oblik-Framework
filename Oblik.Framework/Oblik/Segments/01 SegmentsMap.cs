@@ -10,17 +10,17 @@ namespace Oblik
     public class SegmentsMap : Segment
     {
         private const int recordSize = 5;
-        public override int Size
+        public new int Size
         {
             get
             {
                 return TotalSegments * recordSize;
             }
         }
-        public override int ReadSegmentID { get => 1; }
-        public override int WriteSegmentID { get => 0; }
+        public new static int ReadSegmentID { get => 1; }
+        public new static int WriteSegmentID { get => 0; }
         public int TotalSegments { get; private set; }
-        public List<SegmentsMapRec> SegmentsMapList { get; private set; }
+        public List<SegmentsMapRow> SegmentsMapList { get; private set; }
 
         private void Init()
         {
@@ -37,14 +37,14 @@ namespace Oblik
         }
         protected override void FromRaw()
         {
-            SegmentsMapList = new List<SegmentsMapRec>();
+            SegmentsMapList = new List<SegmentsMapRow>();
 
             //Количество записей в карте
             TotalSegments = rawdata[0];
             //Заполнение карты
             for (int i = 0; i < TotalSegments; i++)
             {
-                SegmentsMapRec record = new SegmentsMapRec(rawdata, i * recordSize);
+                SegmentsMapRow record = new SegmentsMapRow(rawdata, i * recordSize);
                 SegmentsMapList.Add(record);
             }
         }

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Oblik
 {
-    public class SegmentsMapRec
+    public class SegmentsMapRow
     {
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace Oblik
         /// </summary>
         public int SegSize { get; private set; }
 
-        public SegmentsMapRec(byte[] rawdata, int index)
+        public SegmentsMapRow(byte[] rawdata, int index)
         {
             Num = rawdata[index];
             Right = (byte)(rawdata[index + 1] & 15);

@@ -43,11 +43,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Oblik.Control\OblikControl.cs" />
     <Compile Include="Oblik.Driver\IOblikDriver.cs" />
     <Compile Include="Oblik.FS\IOblikFS.cs" />
-    <Compile Include="Oblik\Base\Log.cs" />
-    <Compile Include="Oblik\Base\SegmentsMapRec.cs" />
+    <Compile Include="Oblik\Prototypes\Log.cs" />
+    <Compile Include="Oblik\Prototypes\Row.cs" />
+    <Compile Include="Oblik\Prototypes\Rows\SegmentsMapRow.cs" />
+    <Compile Include="Oblik\Segments\02 FirmwareInfo.cs" />
     <Compile Include="Oblik\Segments\25 CurrentMonthIntegralValues.cs" />
     <Compile Include="Oblik\Segments\26 CurrentQuarterIntegralValues.cs" />
     <Compile Include="Oblik\Segments\27 CurrentYearIntegralValues.cs" />
@@ -56,18 +57,19 @@
     <Compile Include="Oblik\Segments\30 LastQuarterIntegralValues.cs" />
     <Compile Include="Oblik\Segments\31 LastYearIntegralValues.cs" />
     <Compile Include="Oblik\Segments\46, 47 EventLog.cs" />
+    <Compile Include="Oblik\Segments\48, 49 HalfHourGraph.cs" />
     <Compile Include="Oblik\Segments\56, 57 CalcUnits.cs" />
     <Compile Include="Oblik\Segments\36 CurrentValues.cs" />
     <Compile Include="Oblik\Segments\44, 45 DayGraph.cs" />
-    <Compile Include="Oblik\Base\DayGraphRow.cs" />
+    <Compile Include="Oblik\Prototypes\Rows\DayGraphRow.cs" />
     <Compile Include="Oblik\Base\ConnectionParams.cs" />
     <Compile Include="Oblik.FS\L2ErrorDecoder.cs" />
     <Compile Include="Oblik.FS\OblikFS.cs" />
-    <Compile Include="Oblik\Base\EventLogRow.cs" />
-    <Compile Include="Oblik\Base\HalfHourLogRow.cs" />
+    <Compile Include="Oblik\Prototypes\Rows\EventLogRow.cs" />
+    <Compile Include="Oblik\Prototypes\Rows\HalfHourGraphRow.cs" />
     <Compile Include="Oblik\Segments\38 HalfHourValues.cs" />
-    <Compile Include="Oblik\Base\IntegralValues.cs" />
-    <Compile Include="Oblik\Base\Segment.cs" />
+    <Compile Include="Oblik\Prototypes\IntegralValues.cs" />
+    <Compile Include="Oblik\Prototypes\Segment.cs" />
     <Compile Include="Oblik\Segments\37 MinuteValues.cs" />
     <Compile Include="Oblik\Segments\64, 65 InternalTime.cs" />
     <Compile Include="Oblik\Segments\66, 67 NetworkConfig.cs" />
@@ -76,8 +78,7 @@
     <Compile Include="Oblik\Base\Exceptions.cs" />
     <Compile Include="Oblik.Driver\IO.cs" />
     <Compile Include="Oblik.Driver\OblikDriver.cs" />
-    <Compile Include="Oblik\Convert.cs" />
-    <Compile Include="Oblik\Base\SminiFlo.cs" />
+    <Compile Include="Oblik\Utils\Convert.cs" />
     <Compile Include="Oblik\Segments\24 CurrentDayIntegralValues.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Oblik.FS\L2Frames.cs" />

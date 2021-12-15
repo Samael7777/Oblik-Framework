@@ -9,9 +9,9 @@ namespace Oblik
     public class CurrentValues : Segment
     {
        
-        public override int Size { get => 24; }
-        public override int ReadSegmentID { get => 36; }
-        public override int WriteSegmentID { get => 0; }
+        public new static int Size { get => 24; }
+        public new static int ReadSegmentID { get => 36; }
+        public new static int WriteSegmentID { get => 0; }
         
         #region Values
         public float Curr1 { get; private set; }
@@ -28,7 +28,7 @@ namespace Oblik
         public CurrentValues(OblikFS oblikFS) : base(oblikFS) { }
         public CurrentValues(ConnectionParams connectionParams) : base(connectionParams) { }
 
-        protected override void ToRaw()
+        protected override void FromRaw()
         {
             int index = 0;
             Curr1 = Convert.ToUminiflo(rawdata, index);

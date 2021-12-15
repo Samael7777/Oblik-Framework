@@ -2,17 +2,14 @@
 
 namespace Oblik
 {
-    public class EventLogRow
+    public class EventLogRow : Row
     {
-        public int Size { get => 5; }
+        public new static int RecordSize { get => 5; }
         public DateTime Time { get; private set; }
         public int Code { get; private set; }
 
-        public EventLogRow(byte[] rawdata, int index)
+        public EventLogRow(byte[] rawdata, int index) : base(rawdata, index)
         {
-            if ((rawdata.Length - index) < Size)
-                throw new ArgumentException($"Raw data size must be {Size} bytes long");
-
             Time = Convert.ToUTCTime(rawdata, index);
             index += 4;
             Code = rawdata[index];

@@ -5,9 +5,9 @@ namespace Oblik
 {
     public class MinuteValues : Segment
     {
-        public override int Size { get => 40; }
-        public override int ReadSegmentID { get => 37; }
-        public override int WriteSegmentID { get => 0; }
+        public new static int Size { get => 40; }
+        public new static int ReadSegmentID { get => 37; }
+        public new static int WriteSegmentID { get => 0; }
 
         #region Values
         public float act_ener { get; private set; }

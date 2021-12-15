@@ -6,9 +6,9 @@ namespace Oblik
     {
         protected byte[] rawdata;
         protected OblikFS oblikFS;
-        public abstract int Size { get; }
-        public abstract int WriteSegmentID { get; }
-        public abstract int ReadSegmentID { get; }
+        public static int Size { get; }
+        public static int WriteSegmentID { get; }
+        public static int ReadSegmentID { get; }
 
         protected Segment()
         {

@@ -7,18 +7,20 @@ namespace Oblik
 {
     public abstract class Log : Segment
 
-    {
-        public abstract int MaxRecords { get; }
+    {   
+        public static int MaxRecords { get; }
         public abstract int NumberOfRecords { get;}
-        public abstract int RecordSize { get; }
-        protected Log() : base()
-        {
-        }
+        public static int RecordSize { get ; }
+        public static int ClearSegmentID { get; }
+        public static int PointerSegmentID { get; }
+
+        protected Log() : base() { }
+        
         public void GetLastRecords(int records)
         {           
             if (records > MaxRecords)
                 throw new ArgumentOutOfRangeException($"Records to read must be below or equal {MaxRecords}");
-            CleanLog();
+            CleanRecords();
             int maxPacketSize = 255 / RecordSize;                         //Максимально записей в 1 пакете
             int startIndex = MaxRecords - records;
             int offset = startIndex * RecordSize;
@@ -38,9 +40,23 @@ namespace Oblik
         
         public Log(ConnectionParams connectionParams) : base(connectionParams) { }
         public Log(OblikFS oblikFS) : base(oblikFS) { }
-
+        public override void Read()
+        {
+            int currentRecords = NumberOfRecords;
+            GetLastRecords(currentRecords);
+        }
+        protected abstract void CleanRecords();
         protected abstract void AddRecord(byte[] rawdata, int index);
-        protected abstract void CleanLog();
+        public virtual void CleanLog()
+        {
+            if (ClearSegmentID == 0)
+                throw new OblikIOException("Not eraseable segment", (int)Error.NotEraseableSegError);
+
+            byte[] req = new byte[2];
+            req[1] = oblikFS.CurrentConnectionParams.Address;
+            req[0] = (byte)(~req[1]);
+            oblikFS.WriteSegment(ClearSegmentID, 0, req);
+        }
 
     }
 }

@@ -8,9 +8,9 @@ namespace Oblik
     /// </summary>
     public class CalcUnits : Segment
     {
-        public override int Size { get => 57; }
-        public override int ReadSegmentID { get => 56; }
-        public override int WriteSegmentID { get => 57; }
+        public new static int Size { get => 57; }
+        public new static int ReadSegmentID { get => 56; }
+        public new static int WriteSegmentID { get => 57; }
 
         #region Segment values
 

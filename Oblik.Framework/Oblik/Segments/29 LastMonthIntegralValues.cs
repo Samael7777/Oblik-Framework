@@ -8,9 +8,9 @@ namespace Oblik
 {
     public class LastMonthIntegralValues : IntegralValues
     {
-        public override int Size { get => 240; }
-        public override int ReadSegmentID { get => 29; }
-        public override int WriteSegmentID { get => 0; }
+        public new static int Size { get => 240; }
+        public new static int ReadSegmentID { get => 29; }
+        public new static int WriteSegmentID { get => 0; }
         public LastMonthIntegralValues(ConnectionParams connectionParams) : base(connectionParams) { }
         public LastMonthIntegralValues(OblikFS oblikFS) : base(oblikFS) { }
     }

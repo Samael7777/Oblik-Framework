@@ -27,6 +27,7 @@
         L2UnkError = 19,
         NotWriteableSegError = 20,
         NotReadableSegError = 21,
+        NotEraseableSegError = 22,
     }
 
     /// <summary>

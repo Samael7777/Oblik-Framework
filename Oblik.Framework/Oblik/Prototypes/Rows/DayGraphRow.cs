@@ -5,12 +5,9 @@ namespace Oblik
     /// <summary>
     /// Строка суточного графика
     /// </summary>
-    public class DayGraphRow
+    public class DayGraphRow : Row
     {
-        /// <summary>
-        /// Размер сырой структуры, байт
-        /// </summary>
-        public int RecordSize { get => 28; }
+        public new static int RecordSize { get => 28; }
 
         #region Values
         /// <summary>
@@ -49,7 +46,7 @@ namespace Oblik
         /// </summary>
         /// <param name="rawdata">Массив байт</param>
         /// <param name="index">Начальный индекс</param>
-        public DayGraphRow(byte[] rawdata, int index) 
+        public DayGraphRow(byte[] rawdata, int index) : base(rawdata, index)
         {
             Time = Convert.ToUTCTime(rawdata, index).ToLocalTime();
             index += 4;

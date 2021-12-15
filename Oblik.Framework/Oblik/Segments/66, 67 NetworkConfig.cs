@@ -8,9 +8,9 @@ namespace Oblik
     /// </summary>
     public class NetworkConfig : Segment
     {
-        public override int Size { get => 3; }
-        public override int ReadSegmentID { get => 66; }
-        public override int WriteSegmentID { get => 67; }
+        public new static int Size { get => 3; }
+        public new static int ReadSegmentID { get => 66; }
+        public new static int WriteSegmentID { get => 67; }
 
         /// <summary>
         /// Сетевой адрес по протоколу RS-48
