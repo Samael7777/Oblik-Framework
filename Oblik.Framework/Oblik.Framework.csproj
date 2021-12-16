@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Oblik.Driver\IOblikDriver.cs" />
     <Compile Include="Oblik.FS\IOblikFS.cs" />
+    <Compile Include="Oblik\Base\UserLevel.cs" />
     <Compile Include="Oblik\Prototypes\Log.cs" />
     <Compile Include="Oblik\Prototypes\Row.cs" />
     <Compile Include="Oblik\Prototypes\Rows\SegmentsMapRow.cs" />
@@ -74,7 +75,7 @@
     <Compile Include="Oblik\Segments\64, 65 InternalTime.cs" />
     <Compile Include="Oblik\Segments\66, 67 NetworkConfig.cs" />
     <Compile Include="Oblik\Segments\01 SegmentsMap.cs" />
-    <Compile Include="Oblik\Base\Constants.cs" />
+    <Compile Include="Oblik\Base\ErrorCodes.cs" />
     <Compile Include="Oblik\Base\Exceptions.cs" />
     <Compile Include="Oblik.Driver\IO.cs" />
     <Compile Include="Oblik.Driver\OblikDriver.cs" />
