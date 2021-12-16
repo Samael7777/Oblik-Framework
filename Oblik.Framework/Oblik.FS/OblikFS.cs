@@ -75,7 +75,7 @@ namespace Oblik.FS
         /// <returns>Успех операции</returns>
         public byte[] ReadSegment(int segment, int offset, int len)
         {
-            byte[] result = new byte[0];
+            
             PerformFrame((byte)segment, (ushort)offset, (byte)len, Access.Read);
             byte[] answer = oblikDriver.Request(l1);
             //Проверка на ошибки L2
@@ -83,7 +83,7 @@ namespace Oblik.FS
             {
                 DecodeSegmentError(answer[2]);
             }
-
+            byte[] result = new byte[answer[1]];
             Array.Copy(answer, 2, result, 0, answer[1]);
             return result;
         }

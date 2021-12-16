@@ -10,15 +10,15 @@ namespace Oblik
     public class SegmentsMap : Segment
     {
         private const int recordSize = 5;
-        public new int Size
+        public override int Size
         {
             get
             {
                 return TotalSegments * recordSize;
             }
         }
-        public new static int ReadSegmentID { get => 1; }
-        public new static int WriteSegmentID { get => 0; }
+        public override int ReadSegmentID { get => 1; }
+        public override int WriteSegmentID { get => 0; }
         public int TotalSegments { get; private set; }
         public List<SegmentsMapRow> SegmentsMapList { get; private set; }
 

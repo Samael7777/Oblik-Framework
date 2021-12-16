@@ -9,9 +9,9 @@ namespace Oblik
     public class CurrentValues : Segment
     {
        
-        public new static int Size { get => 24; }
-        public new static int ReadSegmentID { get => 36; }
-        public new static int WriteSegmentID { get => 0; }
+        public override int Size { get => 24; }
+        public override int ReadSegmentID { get => 36; }
+        public override int WriteSegmentID { get => 0; }
         
         #region Values
         public float Curr1 { get; private set; }

@@ -4,7 +4,7 @@ namespace Oblik
 {
     public class HalfHourGraphRow : Row
     {
-        public new static int RecordSize { get => 20; }
+        public override int RecordSize { get => 20; }
 
         public float act_ener { get; private set; }
         public float rea_ener { get; private set; }

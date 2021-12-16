@@ -7,7 +7,7 @@ namespace Oblik
     /// </summary>
     public class DayGraphRow : Row
     {
-        public new static int RecordSize { get => 28; }
+        public override int RecordSize { get => 28; }
 
         #region Values
         /// <summary>

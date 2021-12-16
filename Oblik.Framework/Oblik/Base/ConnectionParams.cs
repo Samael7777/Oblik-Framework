@@ -13,7 +13,7 @@ namespace Oblik
         /// <summary>
         /// Номер порта счетчика
         /// </summary>
-        public byte Port { get; set; }
+        public string Port { get; set; }
 
         /// <summary>
         /// Таймаут, мс
@@ -75,7 +75,7 @@ namespace Oblik
         /// </summary>
         public ConnectionParams()
         {
-            Port = 1;
+            Port = "COM1";
             Baudrate = 9600;
             Timeout = 500;
             Address = 0;

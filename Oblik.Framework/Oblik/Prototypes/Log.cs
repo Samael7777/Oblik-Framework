@@ -8,11 +8,11 @@ namespace Oblik
     public abstract class Log : Segment
 
     {   
-        public static int MaxRecords { get; }
+        public abstract int MaxRecords { get; }
         public abstract int NumberOfRecords { get;}
-        public static int RecordSize { get ; }
-        public static int ClearSegmentID { get; }
-        public static int PointerSegmentID { get; }
+        public abstract int RecordSize { get ; }
+        public abstract int ClearSegmentID { get; }
+        public abstract int PointerSegmentID { get; }
 
         protected Log() : base() { }
         

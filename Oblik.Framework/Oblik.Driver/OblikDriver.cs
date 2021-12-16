@@ -31,7 +31,7 @@ namespace Oblik.Driver
             //Настройка соединения с COM портом
             sp = new SerialPort
             {
-                PortName = "COM" + this.connectionParams.Port.ToString(),
+                PortName = this.connectionParams.Port,
                 BaudRate = this.connectionParams.Baudrate,
                 Parity = Parity.None,
                 DataBits = 8,

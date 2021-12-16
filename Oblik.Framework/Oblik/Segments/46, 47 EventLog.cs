@@ -8,17 +8,17 @@ namespace Oblik
 {
     public class EventLog : Log
     {
-        public new static int Size { get => 4000; }
-        public new static int ReadSegmentID { get => 45; }
-        public new static int WriteSegmentID { get => 0; }
-        public new static int ClearSegmentID { get => 89; }
-        public new static int PointerSegmentID { get => 44; }
+        public override int Size { get => 4000; }
+        public override int ReadSegmentID { get => 45; }
+        public override int WriteSegmentID { get => 0; }
+        public override int ClearSegmentID { get => 89; }
+        public override int PointerSegmentID { get => 44; }
         public override int NumberOfRecords
         {
             get => Convert.ToValue<UInt16>(oblikFS.ReadSegment(PointerSegmentID, 0, 2), 0);
         }
-        public new static int MaxRecords { get => 800; }
-        public new static int RecordSize { get => 5; }
+        public override int MaxRecords { get => 800; }
+        public override int RecordSize { get => 5; }
 
         public List<EventLogRow> Records { get; protected set; }
         

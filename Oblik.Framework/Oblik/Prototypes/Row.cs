@@ -7,7 +7,7 @@ namespace Oblik
 {
     public abstract class Row
     {
-        public static int RecordSize { get; }
+        public abstract int RecordSize { get; }
         public Row(byte[] rawdata, int index)
         {
             if ((rawdata.Length - index) < RecordSize)

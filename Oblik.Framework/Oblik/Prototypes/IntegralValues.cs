@@ -5,9 +5,9 @@ namespace Oblik
 {
     public abstract class IntegralValues : Segment
     {
-        public new static int Size { get => 240; }
-        public new static int ReadSegmentID { get => 0; }
-        public new static int WriteSegmentID { get => 0; }
+        public override int Size { get => 240; }
+        public override int ReadSegmentID { get => 0; }
+        public override int WriteSegmentID { get => 0; }
 
         #region Values
         public uint act_en_p { get; private set; }

@@ -6,9 +6,9 @@ namespace Oblik
     public class HalfHourValues : Segment
     {
         
-        public new static int Size { get => 80; }
-        public new static int ReadSegmentID { get => 38; }
-        public new static int WriteSegmentID { get => 0; }
+        public override int Size { get => 80; }
+        public override int ReadSegmentID { get => 38; }
+        public override int WriteSegmentID { get => 0; }
         
         #region Values
         public float act_pw_cur { get; private set; }

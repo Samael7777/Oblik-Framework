@@ -4,9 +4,9 @@ namespace Oblik
 { 
     public class FirmwareInfo : Segment
     {
-        public new static int Size { get => 2; }
-        public new static int ReadSegmentID { get => 2; }
-        public new static int WriteSegmentID { get => 0; }
+        public override int Size { get => 2; }
+        public override int ReadSegmentID { get => 2; }
+        public override int WriteSegmentID { get => 0; }
 
         public int Version { get; protected set; }
         public int Build { get; protected set; }
