@@ -8,6 +8,8 @@ namespace Oblik
     /// </summary>
     public class NetworkConfig : Segment
     {
+        private int speed;
+
         public override int Size { get => 3; }
         public override int ReadSegmentID { get => 66; }
         public override int WriteSegmentID { get => 67; }
@@ -20,26 +22,22 @@ namespace Oblik
         /// <summary>
         /// Скорость соединения, делитель от 115200
         /// </summary>
-        public UInt16 Divisor
-        {
-            get => Divisor;
-            set
-            {
-                Divisor = value;
-                Speed = 115200 / Divisor;
-            }
-        }
+        public ushort Divisor { get; set; }
 
         /// <summary>
         /// Скорость соединения
         /// </summary>
         public int Speed
         {
-            get => Speed;
+            get
+            {
+                speed = 115200 / Divisor;
+                return speed;
+            }
             set
             {
-                Speed = value;
-                Divisor = (ushort)(115200 / Speed);
+                Divisor = (ushort)(115200 / value);
+                speed = value;
             }
         }
 
@@ -52,7 +50,7 @@ namespace Oblik
         protected override void FromRaw()
         {
             Addr = rawdata[0];
-            Divisor = (ushort)Convert.ToValue<ushort>(rawdata, 1);
+            Divisor = Convert.ToValue<ushort>(rawdata, 1);
         }
 
         /// <summary>
