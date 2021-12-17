@@ -36,8 +36,8 @@ namespace Oblik
             }
             set
             {
-                Divisor = (ushort)(115200 / value);
                 speed = value;
+                Divisor = (ushort)(115200 / speed);
             }
         }
 
