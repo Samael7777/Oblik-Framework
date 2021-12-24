@@ -30,14 +30,13 @@ namespace Oblik
         {
             Init();
         }
-        
-        protected override void CleanRecords()
-        {
-            Records.Clear();
-        }
         private void Init()
         {
             Records = new List<EventLogRow>();
+        }
+        protected override void CleanRecords()
+        {
+            Records.Clear();
         }
         protected override void AddRecord(byte[] rawdata, int index)
         {

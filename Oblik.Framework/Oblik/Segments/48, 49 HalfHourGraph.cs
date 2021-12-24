@@ -15,7 +15,7 @@ namespace Oblik
         public override int PointerSegmentID { get => 48; }
         public override int NumberOfRecords
         {
-            get => Convert.ToValue<UInt16>(oblikFS.ReadSegment(PointerSegmentID, 0, 2), 0);
+            get => Convert.ToValue<ushort>(oblikFS.ReadSegment(PointerSegmentID, 0, 2), 0);
         }
         public override int MaxRecords { get => 30; }
         public override int RecordSize { get => 20; }
