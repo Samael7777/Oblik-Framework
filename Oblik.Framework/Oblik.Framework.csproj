@@ -46,6 +46,7 @@
     <Compile Include="Oblik.Driver\IOblikDriver.cs" />
     <Compile Include="Oblik.FS\IOblikFS.cs" />
     <Compile Include="Oblik\Base\UserLevel.cs" />
+    <Compile Include="Oblik\Meter.cs" />
     <Compile Include="Oblik\Prototypes\Log.cs" />
     <Compile Include="Oblik\Prototypes\Row.cs" />
     <Compile Include="Oblik\Prototypes\Rows\SegmentsMapRow.cs" />

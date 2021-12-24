@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Oblik.FS;
 
 namespace Oblik
 {
@@ -19,6 +20,21 @@ namespace Oblik
         public override int MaxRecords { get => 30; }
         public override int RecordSize { get => 20; }
         public List<HalfHourGraphRow> Records { get; protected set; }
+
+        public HalfHourGraph(ConnectionParams connectionParams) : base(connectionParams) 
+        {
+            Init();
+        }
+        public HalfHourGraph(OblikFS oblikFS) : base(oblikFS)
+        {
+            Init();
+        }
+
+        private void Init()
+        {
+            Records = new List<HalfHourGraphRow>();
+        }
+
         protected override void CleanRecords()
         {
             Records.Clear();

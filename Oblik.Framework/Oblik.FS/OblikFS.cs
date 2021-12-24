@@ -75,16 +75,26 @@ namespace Oblik.FS
         /// <returns>Успех операции</returns>
         public byte[] ReadSegment(int segment, int offset, int len)
         {
-            
-            PerformFrame((byte)segment, (ushort)offset, (byte)len, Access.Read);
-            byte[] answer = oblikDriver.Request(l1);
-            //Проверка на ошибки L2
-            if (answer[0] != 0)
+            const int maxPacket = 250;      //Максимальный размер пакета L2
+            int bytesLeft = len;            //Осталось байт для чтения
+            int nextOffset = offset;        //Смещение следующего чтения
+            byte[] result = new byte[0];
+
+            while (bytesLeft > 0)
             {
-                DecodeSegmentError(answer[2]);
+                int querySize = (bytesLeft > maxPacket) ? maxPacket : bytesLeft;
+                PerformFrame((byte)segment, (ushort)nextOffset, (byte)querySize, Access.Read);
+                byte[] answer = oblikDriver.Request(l1);      
+                DecodeSegmentError(answer[0]);      //Проверка на ошибки L2
+                nextOffset += querySize;
+                bytesLeft -= querySize;
+                //Сохранение результата
+                int nextIndex = result.Length;
+                Array.Resize(ref result, answer[1] + nextIndex);
+                Array.Copy(answer, 2, result, nextIndex, answer[1]);
+
+               
             }
-            byte[] result = new byte[answer[1]];
-            Array.Copy(answer, 2, result, 0, answer[1]);
             return result;
         }
 

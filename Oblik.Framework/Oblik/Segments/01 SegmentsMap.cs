@@ -39,14 +39,17 @@ namespace Oblik
         {
             SegmentsMapList = new List<SegmentsMapRow>();
 
-            //Количество записей в карте
-            TotalSegments = rawdata[0];
             //Заполнение карты
             for (int i = 0; i < TotalSegments; i++)
             {
                 SegmentsMapRow record = new SegmentsMapRow(rawdata, i * recordSize);
                 SegmentsMapList.Add(record);
             }
+        }
+        public override void Read()
+        {
+            TotalSegments = oblikFS.ReadSegment(1, 0, 1)[0];
+            base.Read();
         }
     }
 }

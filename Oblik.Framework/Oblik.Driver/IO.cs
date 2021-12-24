@@ -20,8 +20,8 @@ namespace Oblik.Driver
         {
 
             //Таймаут на получение данных c ускорением для пакета
-            int timeout = (BytesToRead > 1) ? (connectionParams.Timeout / 5) : connectionParams.Timeout;
-
+            //int timeout = (BytesToRead > 1) ? (connectionParams.Timeout / 5) : connectionParams.Timeout;
+            int timeout = connectionParams.Timeout;
             byte[] buffer = new byte[BytesToRead];      //Буфер для чтения
 
             int BytesGot;                               //Получено байт
