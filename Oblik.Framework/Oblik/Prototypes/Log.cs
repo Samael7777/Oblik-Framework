@@ -13,9 +13,7 @@ namespace Oblik
         public abstract int RecordSize { get ; }
         public abstract int ClearSegmentID { get; }
         public abstract int PointerSegmentID { get; }
-
-        protected Log() : base() { }
-        
+      
         public void GetLastRecords(int records)
         {           
             if (records > MaxRecords)
