@@ -21,16 +21,7 @@ namespace Oblik
         public override int RecordSize { get => 20; }
         public List<HalfHourGraphRow> Records { get; protected set; }
 
-        public HalfHourGraph(ConnectionParams connectionParams) : base(connectionParams) 
-        {
-            Init();
-        }
-        public HalfHourGraph(OblikFS oblikFS) : base(oblikFS)
-        {
-            Init();
-        }
-
-        private void Init()
+        public HalfHourGraph(IOblikFS oblikFS) : base(oblikFS)
         {
             Records = new List<HalfHourGraphRow>();
         }

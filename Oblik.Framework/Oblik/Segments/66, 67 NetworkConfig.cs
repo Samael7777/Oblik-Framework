@@ -41,9 +41,8 @@ namespace Oblik
             }
         }
 
-        public NetworkConfig(OblikFS oblikFS) : base(oblikFS) { }
-        public NetworkConfig(ConnectionParams connectionParams) : base(connectionParams) { }
-
+        public NetworkConfig(IOblikFS oblikFS) : base(oblikFS) { }
+      
         /// <summary>
         /// Преобразование потока байт в структуру
         /// </summary>

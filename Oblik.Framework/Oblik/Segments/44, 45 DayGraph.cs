@@ -20,19 +20,11 @@ namespace Oblik
 
         public List<DayGraphRow> Records { get; protected set; }
         
-        public DayGraph(OblikFS oblikFS) : base(oblikFS) 
-        {
-            Init();
-        }
-        public DayGraph(ConnectionParams connectionParams) : base(connectionParams)
-        {
-            Init();
-        }
-        
-        private void Init()
+        public DayGraph(IOblikFS oblikFS) : base(oblikFS) 
         {
             Records = new List<DayGraphRow>();
         }
+        
         protected override void CleanRecords()
         {
             Records.Clear();

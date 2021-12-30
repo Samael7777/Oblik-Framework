@@ -22,15 +22,7 @@ namespace Oblik
 
         public List<EventLogRow> Records { get; protected set; }
         
-        public EventLog(OblikFS oblikFS) : base(oblikFS)
-        {
-            Init();
-        }
-        public EventLog(ConnectionParams connectionParams) : base(connectionParams)
-        {
-            Init();
-        }
-        private void Init()
+        public EventLog(IOblikFS oblikFS) : base(oblikFS)
         {
             Records = new List<EventLogRow>();
         }

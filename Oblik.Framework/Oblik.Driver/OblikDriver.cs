@@ -11,7 +11,7 @@ namespace Oblik.Driver
         /// <summary>
         /// Параметры подключения
         /// </summary>
-        private ConnectionParams connectionParams;
+        private SerialConnectionParams connectionParams;
 
         /// <summary>
         /// COM-порт
@@ -24,7 +24,7 @@ namespace Oblik.Driver
         /// Конструктор
         /// </summary>
         /// <param name="connectionParams">Параметры подключения</param>
-        public OblikDriver(ConnectionParams connectionParams)
+        public OblikDriver(SerialConnectionParams connectionParams)
         {
             this.connectionParams = connectionParams;
 
@@ -59,10 +59,34 @@ namespace Oblik.Driver
 
         /*----------------------Public------------------------------------------*/
 
+       /// <summary>
+       /// Текущий адрес счетчика
+       /// </summary>
+        public int Address
+        {
+            get => connectionParams.Address;
+        }
+        
+        /// <summary>
+        /// Текущий пользователь
+        /// </summary>
+        public UserLevel User
+        {
+            get => connectionParams.User;
+        }
+        
+        /// <summary>
+        /// Текущий пароль
+        /// </summary>
+        public byte[] Password
+        {
+            get => connectionParams.PasswordArray;
+        }
+
         /// <summary>
         /// Параметры текущего соединения
         /// </summary>
-        public ConnectionParams CurrentConnectionParams
+        public SerialConnectionParams CurrentConnectionParams
         {
             get => connectionParams;
             set
@@ -70,8 +94,8 @@ namespace Oblik.Driver
                 connectionParams = value;
                 sp.PortName = "COM" + connectionParams.Port.ToString();
                 sp.BaudRate = connectionParams.Baudrate;
-                sp.WriteTimeout = (int)connectionParams.Timeout + 100;
-                sp.ReadTimeout = (int)connectionParams.Timeout + 100;
+                sp.WriteTimeout = connectionParams.Timeout;
+                sp.ReadTimeout = connectionParams.Timeout;
             }
         }
 

@@ -25,8 +25,7 @@ namespace Oblik
         public ushort Freq { get; private set; }
         #endregion
 
-        public CurrentValues(OblikFS oblikFS) : base(oblikFS) { }
-        public CurrentValues(ConnectionParams connectionParams) : base(connectionParams) { }
+        public CurrentValues(IOblikFS oblikFS) : base(oblikFS) { }
 
         protected override void FromRaw()
         {

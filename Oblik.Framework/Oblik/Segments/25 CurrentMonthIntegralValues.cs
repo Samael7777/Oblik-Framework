@@ -8,7 +8,6 @@ namespace Oblik
         public override int ReadSegmentID { get => 25; }
         public override int WriteSegmentID { get => 0; }
         
-        public CurrentMonthIntegralValues(ConnectionParams connectionParams) : base(connectionParams) { }
-        public CurrentMonthIntegralValues(OblikFS oblikFS) : base(oblikFS) { }
+        public CurrentMonthIntegralValues(IOblikFS oblikFS) : base(oblikFS) { }
     }
 }

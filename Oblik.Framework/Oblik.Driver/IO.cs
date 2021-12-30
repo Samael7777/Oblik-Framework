@@ -97,8 +97,6 @@ namespace Oblik.Driver
                 throw new OblikIOException(e.Message, (int)Error.WriteError);
             }
 
-            answer = new byte[2];
-
             //Получение результата L1
             ReadAnswer(1, 0, ref answer);
          

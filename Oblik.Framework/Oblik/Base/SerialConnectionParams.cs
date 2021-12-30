@@ -5,7 +5,7 @@ namespace Oblik
     /// <summary>
     /// Параметры подключения к счетчику
     /// </summary>
-    public class ConnectionParams
+    public class SerialConnectionParams
     {
         private string password;
         private byte[] pwdBytes;
@@ -73,7 +73,7 @@ namespace Oblik
         /// <summary>
         /// Конструктор
         /// </summary>
-        public ConnectionParams()
+        public SerialConnectionParams()
         {
             Port = "COM1";
             Baudrate = 9600;

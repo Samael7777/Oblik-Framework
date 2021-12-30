@@ -19,19 +19,12 @@ namespace Oblik
         public uint[] channel_old { get; private set; }
         #endregion
 
-        private void Init()
+        public HalfHourValues(IOblikFS oblikFS) : base(oblikFS) 
         {
             channel_cur = new uint[8];
             channel_old = new uint[8];
         }
-        public HalfHourValues(OblikFS oblikFS) : base(oblikFS) 
-        {
-            Init();
-        }
-        public HalfHourValues(ConnectionParams connectionParams) : base(connectionParams) 
-        {
-            Init();
-        }
+
         protected override void FromRaw()
         { 
             int index = 0;

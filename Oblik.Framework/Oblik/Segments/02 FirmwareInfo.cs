@@ -11,8 +11,7 @@ namespace Oblik
         public int Version { get; protected set; }
         public int Build { get; protected set; }
 
-        public FirmwareInfo(ConnectionParams connectionParams) : base(connectionParams) { }
-        public FirmwareInfo(OblikFS oblikFS) : base(oblikFS) { }
+        public FirmwareInfo(IOblikFS oblikFS) : base(oblikFS) { }
 
         protected override void FromRaw()
         {

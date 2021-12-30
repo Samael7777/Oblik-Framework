@@ -15,18 +15,11 @@ namespace Oblik
         public uint[] channel { get; private set; }
         #endregion
 
-        private void Init()
+        public MinuteValues(IOblikFS oblikFS) : base(oblikFS)
         {
             channel = new uint[8];
         }
-        public MinuteValues(OblikFS oblikFS) : base(oblikFS)
-        {
-            Init();
-        }
-        public MinuteValues(ConnectionParams connectionParams) : base(connectionParams)
-        {
-            Init();
-        }
+     
         protected override void FromRaw()
         {
             

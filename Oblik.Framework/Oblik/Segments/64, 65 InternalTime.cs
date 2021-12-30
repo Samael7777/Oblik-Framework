@@ -21,17 +21,9 @@ namespace Oblik
                 return time;
             }
         }
-        private void Init()
+        public InternalTime(IOblikFS oblikFS) : base(oblikFS)
         {
             time = new DateTime();
-        }
-        public InternalTime(OblikFS oblikFS) : base(oblikFS)
-        {
-            Init();
-        }
-        public InternalTime(ConnectionParams connectionParams) : base(connectionParams)
-        {
-            Init();
         }
         public void SetCurrentTime()
         {   

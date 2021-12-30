@@ -38,8 +38,7 @@ namespace Oblik
             }
         }
         
-        public Log(ConnectionParams connectionParams) : base(connectionParams) { }
-        public Log(OblikFS oblikFS) : base(oblikFS) { }
+        public Log(IOblikFS oblikFS) : base(oblikFS) { }
         public override void Read()
         {
             int currentRecords = NumberOfRecords;
@@ -53,7 +52,7 @@ namespace Oblik
                 throw new OblikIOException("Not eraseable segment", (int)Error.NotEraseableSegError);
 
             byte[] req = new byte[2];
-            req[1] = oblikFS.CurrentConnectionParams.Address;
+            req[1] = (byte)oblikFS.OblikDriver.Address;
             req[0] = (byte)(~req[1]);
             oblikFS.WriteSegment(ClearSegmentID, 0, req);
         }

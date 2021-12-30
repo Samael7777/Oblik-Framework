@@ -40,9 +40,7 @@ namespace Oblik
         public float volt_cf { get => (float)Math.Pow(10, (Volt_unit - 1)); }
         #endregion
 
-        public CalcUnits(ConnectionParams connectionParams) : base(connectionParams) { }
-
-        public CalcUnits(OblikFS oblikFS) : base(oblikFS) { }
+        public CalcUnits(IOblikFS oblikFS) : base(oblikFS) { }
 
         /// <summary>
         /// Преобразование структуры параметров вычислений в массив байт

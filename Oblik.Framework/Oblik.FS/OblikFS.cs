@@ -35,36 +35,23 @@ namespace Oblik.FS
         /// <summary>
         /// Драйвер интерфейса связи
         /// </summary>
-        private OblikDriver oblikDriver;
-
-        /// <summary>
-        /// Парметры подключения к счетчику
-        /// </summary>
-        private ConnectionParams connectionParams;
+        private IOblikDriver oblikDriver;
 
         /*-------------------------Constructors---------------------------------*/
-        public OblikFS(ConnectionParams connectionParams)
+        public OblikFS(IOblikDriver oblikDriver)
         {
-            this.connectionParams = connectionParams;
-            oblikDriver = new OblikDriver(this.connectionParams);
+
+            this.oblikDriver = oblikDriver;
             l1 = new byte[0];
             l2 = new byte[0];
         }
 
         /*-------------------------Public---------------------------------------*/
         /// <summary>
-        /// Парметры подключения к счетчику
+        /// Драйвер счетчика
         /// </summary>
-        public ConnectionParams CurrentConnectionParams
-        {
-            get => connectionParams;
-            set
-            {
-                connectionParams = value;
-                oblikDriver.CurrentConnectionParams = value;
-            }
-        }
-
+        public IOblikDriver OblikDriver { get => oblikDriver; }
+        
         /// <summary>
         /// Чтение части сегмента счетчика
         /// </summary>

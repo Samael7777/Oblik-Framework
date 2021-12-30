@@ -22,19 +22,11 @@ namespace Oblik
         public int TotalSegments { get; private set; }
         public List<SegmentsMapRow> SegmentsMapList { get; private set; }
 
-        private void Init()
+        public SegmentsMap(IOblikFS oblikFS) : base(oblikFS)
         {
             TotalSegments = 0;
         }
 
-        public SegmentsMap(ConnectionParams connectionParams) : base(connectionParams)
-        {
-            Init();
-        }
-        public SegmentsMap(OblikFS oblikFS) : base(oblikFS)
-        {
-            Init();
-        }
         protected override void FromRaw()
         {
             SegmentsMapList = new List<SegmentsMapRow>();

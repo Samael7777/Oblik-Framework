@@ -12,7 +12,6 @@ namespace Oblik
         public override int ReadSegmentID { get => 28; }
         public override int WriteSegmentID { get => 0; }
 
-        public LastDayIntegralValues(ConnectionParams connectionParams) : base(connectionParams) { }
-        public LastDayIntegralValues(OblikFS oblikFS) : base(oblikFS) { }
+        public LastDayIntegralValues(IOblikFS oblikFS) : base(oblikFS) { }
     }
 }

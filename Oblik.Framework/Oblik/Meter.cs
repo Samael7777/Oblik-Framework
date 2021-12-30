@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Oblik.FS;
+using Oblik.Driver;
 
 namespace Oblik
 {
     public class Meter
     {
         //Соединение
-        private OblikFS oblikFS;
+        private IOblikFS oblikFS;
 
         /*-------------------СЕГМЕНТЫ---------------------*/
         public SegmentsMap SegmentsList { get; private set; }
@@ -33,15 +34,14 @@ namespace Oblik
         public NetworkConfig MeterNetwork { get; private set; }
 
         /*--------------------Конструкторы---------------------------------*/
-        public Meter(ConnectionParams connectionParams)
-        {
-            oblikFS = new OblikFS(connectionParams);
-            Init();
-        }
-        public Meter(OblikFS oblikFS)
+        public Meter(IOblikFS oblikFS)
         {
             this.oblikFS = oblikFS;
             Init();
+        }
+        public Meter(IOblikDriver oblikDriver)
+        {
+            oblikFS = new OblikFS(oblikDriver);
         }
         private void Init()
         {

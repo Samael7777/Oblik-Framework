@@ -41,17 +41,9 @@ namespace Oblik
         public float max_exc_d { get; private set; }
         #endregion
         
-        private void Init()
+        public IntegralValues(IOblikFS oblikFS) : base(oblikFS) 
         {
             channel = new uint[8, 4];
-        }
-        public IntegralValues(ConnectionParams connectionParams) : base(connectionParams) 
-        {
-            Init();
-        }
-        public IntegralValues(OblikFS oblikFS) : base(oblikFS) 
-        {
-            Init();
         }
 
         protected override void FromRaw()

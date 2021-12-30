@@ -64,7 +64,7 @@
     <Compile Include="Oblik\Segments\36 CurrentValues.cs" />
     <Compile Include="Oblik\Segments\44, 45 DayGraph.cs" />
     <Compile Include="Oblik\Prototypes\Rows\DayGraphRow.cs" />
-    <Compile Include="Oblik\Base\ConnectionParams.cs" />
+    <Compile Include="Oblik\Base\SerialConnectionParams.cs" />
     <Compile Include="Oblik.FS\L2ErrorDecoder.cs" />
     <Compile Include="Oblik.FS\OblikFS.cs" />
     <Compile Include="Oblik\Prototypes\Rows\EventLogRow.cs" />

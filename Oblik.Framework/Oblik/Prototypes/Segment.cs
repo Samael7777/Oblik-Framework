@@ -5,24 +5,15 @@ namespace Oblik
     public abstract class Segment
     {
         protected byte[] rawdata;
-        protected OblikFS oblikFS;
+        protected IOblikFS oblikFS;
         public abstract int Size { get; }
         public abstract int WriteSegmentID { get; }
         public abstract int ReadSegmentID { get; }
 
-        protected Segment()
-        {
-            rawdata = new byte[Size];
-        }
-
-        public Segment(ConnectionParams connectionParams) : this()
-        {
-            oblikFS = new OblikFS(connectionParams);
-        }
-
-        public Segment(OblikFS oblikFS) : this()
+        public Segment(IOblikFS oblikFS)
         {
             this.oblikFS = oblikFS;
+            rawdata = new byte[Size];
         }
 
         public virtual void Read()
@@ -44,7 +35,6 @@ namespace Oblik
         }
 
         protected virtual void ToRaw() { }
-
         protected virtual void FromRaw() { }
     }
 }
