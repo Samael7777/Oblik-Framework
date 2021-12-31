@@ -6,7 +6,7 @@ using System;
 
 namespace Oblik.Driver
 {
-    public partial class OblikDriver
+    public partial class OblikSerialDriver
     {
 
         /// <summary>
@@ -18,9 +18,6 @@ namespace Oblik.Driver
         /// <returns></returns>
         private bool ReadAnswer(int BytesToRead, int index, ref byte[] answer)
         {
-
-            //Таймаут на получение данных c ускорением для пакета
-            //int timeout = (BytesToRead > 1) ? (connectionParams.Timeout / 5) : connectionParams.Timeout;
             int timeout = connectionParams.Timeout;
             byte[] buffer = new byte[BytesToRead];      //Буфер для чтения
 
@@ -33,7 +30,7 @@ namespace Oblik.Driver
                 if ((GetTickCount() - start) > (ulong)timeout)
                 {
                     //Таймаут
-                    throw new OblikIOException("Timeout", (int)Error.Timeout);                    
+                    throw new OblikIOException("Timeout", Error.Timeout);                    
                 }
                 try
                 {
@@ -49,7 +46,7 @@ namespace Oblik.Driver
             if (offset != BytesToRead)
             {
                 //Ошибка чтения порта
-                throw new OblikIOException("Port read error", (int)Error.ReadError);
+                throw new OblikIOException("Port read error", Error.ReadError);
             }
             //Сохранение полученных данных
             Array.Copy(buffer, 0, answer, index, BytesToRead);
@@ -76,11 +73,14 @@ namespace Oblik.Driver
             //Попытка открытия порта
             try
             {
-                sp.Open();
+                if (!sp.IsOpen)
+                {
+                    sp.Open();
+                }  
             }
             catch (Exception e)
             {
-                throw new OblikIOException(e.Message, (int)Error.OpenPortError);
+                throw new OblikIOException(e.Message, Error.OpenPortError);
             }
 
             //Очистка буферов
@@ -94,7 +94,7 @@ namespace Oblik.Driver
             }
             catch (Exception e)
             {
-                throw new OblikIOException(e.Message, (int)Error.WriteError);
+                throw new OblikIOException(e.Message, Error.WriteError);
             }
 
             //Получение результата L1
@@ -124,7 +124,7 @@ namespace Oblik.Driver
             //Ошибка контрольной суммы ответа
             if (cs != 0)
             {
-                throw new OblikIOException("Answer L1 CSC Error", (int)Error.L1CSCError);
+                throw new OblikIOException("Answer L1 CSC Error", Error.L1CSCError);
             }
 
             //Формирование ответа L2
@@ -161,11 +161,11 @@ namespace Oblik.Driver
                 case 1:
                     break;  //No errors
                 case 0xff:
-                    throw new OblikIOException("L1 Checksum Error", (int)Error.L1CSCError);
+                    throw new OblikIOException("L1 Checksum Error", Error.L1CSCError);
                 case 0xfe:
-                    throw new OblikIOException("L1 Meter input buffer overflow", (int)Error.L1BufOverfowError);
+                    throw new OblikIOException("L1 Meter input buffer overflow", Error.L1BufOverfowError);
                 default:
-                    throw new OblikIOException("L1 Unknown error", (int)Error.L1UnkErrror);                 
+                    throw new OblikIOException("L1 Unknown error", Error.L1UnkErrror);                 
             }
         }
     }

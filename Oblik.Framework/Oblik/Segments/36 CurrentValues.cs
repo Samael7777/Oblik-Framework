@@ -22,13 +22,16 @@ namespace Oblik
         public float Volt3 { get; private set; }
         public float Act_pw { get; private set; }
         public float Rea_pw { get; private set; }
-        public ushort Freq { get; private set; }
+        public float Freq { get; private set; }
         #endregion
 
         public CurrentValues(IOblikFS oblikFS) : base(oblikFS) { }
 
         protected override void FromRaw()
         {
+
+            byte[] test = rawdata;
+            
             int index = 0;
             Curr1 = Convert.ToUminiflo(rawdata, index);
             index += 2;
@@ -48,16 +51,25 @@ namespace Oblik
             Volt3 = Convert.ToUminiflo(rawdata, index);
             index += 2;
 
-            Act_pw = Convert.ToUminiflo(rawdata, index);
+            Act_pw = Convert.ToSminiflo(rawdata, index);
             index += 2;
 
-            Rea_pw = Convert.ToUminiflo(rawdata, index);
+            Rea_pw = Convert.ToSminiflo(rawdata, index);
             index += 2;
 
             //Reserved1
+            //float res1 = Convert.ToUminiflo(rawdata, index);
             index += 2;
 
-            Freq = Convert.ToValue<UInt16>(rawdata, index);
+            Freq = Convert.ToValue<UInt16>(rawdata, index) / 30f;
+            //index += 2;
+
+            ////Reserved2
+            //float res2 = Convert.ToUminiflo(rawdata, index);
+            //index += 2;
+
+            ////Reserved3
+            //float res3 = Convert.ToUminiflo(rawdata, index);
         }
     }
 }

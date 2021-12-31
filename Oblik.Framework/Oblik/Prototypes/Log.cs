@@ -19,7 +19,7 @@ namespace Oblik
             if (records > MaxRecords)
                 throw new ArgumentOutOfRangeException($"Records to read must be below or equal {MaxRecords}");
             CleanRecords();
-            int maxPacketSize = 255 / RecordSize;                         //Максимально записей в 1 пакете
+            int maxPacketSize = 250 / RecordSize;                         //Максимально записей в 1 пакете
             int startIndex = MaxRecords - records;
             int offset = startIndex * RecordSize;
             int recordsLeft = records;                                    //Осталось прочитать строк
@@ -47,7 +47,7 @@ namespace Oblik
         public virtual void CleanLog()
         {
             if (ClearSegmentID == 0)
-                throw new OblikIOException("Not eraseable segment", (int)Error.NotEraseableSegError);
+                throw new OblikIOException("Not eraseable segment", Error.NotEraseableSegError);
 
             byte[] req = new byte[2];
             req[1] = (byte)oblikFS.OblikDriver.Address;

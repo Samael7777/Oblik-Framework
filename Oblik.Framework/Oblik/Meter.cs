@@ -42,6 +42,7 @@ namespace Oblik
         public Meter(IOblikDriver oblikDriver)
         {
             oblikFS = new OblikFS(oblikDriver);
+            Init();
         }
         private void Init()
         {
@@ -72,7 +73,6 @@ namespace Oblik
         /// </summary>
         public void ReadGeneralInfo()
         {
-            SegmentsList.Read();
             Firmware.Read();
             CalculationUnits.Read();
             MeterNetwork.Read();

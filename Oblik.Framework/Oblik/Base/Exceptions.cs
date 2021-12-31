@@ -7,29 +7,29 @@ namespace Oblik
     /// </summary>
     public class OblikIOException : Exception
     {
-        public int errorcode
+        public Error ErrorCode
         {
             get; private set;
         }
 
         public OblikIOException(string message) : base(message)
         {
-            errorcode = 0;
+            ErrorCode = Error.UnknownError;
         }
 
         public OblikIOException() : base()
         {
-            errorcode = 0;
+            ErrorCode = Error.UnknownError;
         }
 
         public OblikIOException(string message, Exception innerException) : base(message, innerException)
         {
-            errorcode = 0;
+            ErrorCode = Error.UnknownError;
         }
 
-        public OblikIOException(string message, int errorcode) : base(message)
+        public OblikIOException(string message, Error errorcode) : base(message)
         {
-            this.errorcode = errorcode;
+            ErrorCode = errorcode;
         }
     }
 }

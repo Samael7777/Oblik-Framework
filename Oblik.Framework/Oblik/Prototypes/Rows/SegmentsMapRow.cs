@@ -21,7 +21,7 @@ namespace Oblik
         /// <summary>
         /// Права доступа
         /// </summary>
-        public int Right { get; private set; }
+        public int Rights { get; private set; }
 
         /// <summary>
         /// Доступ: 0 - чтение, 1 - запись
@@ -31,14 +31,14 @@ namespace Oblik
         /// <summary>
         /// Размер сегмента, байт
         /// </summary>
-        public int SegSize { get; private set; }
+        public int Size { get; private set; }
 
         public SegmentsMapRow(byte[] rawdata, int index)
         {
             Num = rawdata[index];
-            Right = (byte)(rawdata[index + 1] & 15);
+            Rights = (byte)(rawdata[index + 1] & 15);
             Access = (rawdata[index + 1] & 128) >> 7;
-            SegSize = Convert.ToValue<UInt16>(rawdata, 2);
+            Size = Convert.ToValue<UInt16>(rawdata, index + 2);
         }
     }
 }

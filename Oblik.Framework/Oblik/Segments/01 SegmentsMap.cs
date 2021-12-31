@@ -9,7 +9,7 @@ namespace Oblik
     /// </summary>
     public class SegmentsMap : Segment
     {
-        private const int recordSize = 5;
+        private const int recordSize = 4;
         public override int Size
         {
             get
@@ -25,23 +25,31 @@ namespace Oblik
         public SegmentsMap(IOblikFS oblikFS) : base(oblikFS)
         {
             TotalSegments = 0;
-        }
-
-        protected override void FromRaw()
-        {
             SegmentsMapList = new List<SegmentsMapRow>();
-
-            //Заполнение карты
-            for (int i = 0; i < TotalSegments; i++)
-            {
-                SegmentsMapRow record = new SegmentsMapRow(rawdata, i * recordSize);
-                SegmentsMapList.Add(record);
-            }
         }
+
         public override void Read()
         {
-            TotalSegments = oblikFS.ReadSegment(1, 0, 1)[0];
-            base.Read();
+            SegmentsMapList.Clear();    //Очистка списка
+            TotalSegments = oblikFS.ReadSegment(ReadSegmentID, 0, 1)[0];    //Всего сегментов
+            
+            int maxPacketSize = 250 / recordSize;             //Максимально записей в 1 пакете
+            int offset = 1;                                   //Начальное смещение
+            int recordsLeft = TotalSegments;                  //Осталось прочитать строк
+            while (recordsLeft > 0)
+            {
+                int packet = (recordsLeft <= maxPacketSize) ? (recordsLeft) : (maxPacketSize);
+                int dataLenght = packet * recordSize;             
+                rawdata = oblikFS.ReadSegment(ReadSegmentID, offset, dataLenght);
+                //Заполнение карты
+                for (int i = 0; i < packet; i++)
+                {
+                    SegmentsMapRow record = new SegmentsMapRow(rawdata, i * recordSize);
+                    SegmentsMapList.Add(record);
+                }
+                recordsLeft -= packet;
+                offset += packet * recordSize;
+            }
         }
     }
 }

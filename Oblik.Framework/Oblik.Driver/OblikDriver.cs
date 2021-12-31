@@ -4,7 +4,7 @@ using Oblik;
 
 namespace Oblik.Driver
 {
-    public partial class OblikDriver : IOblikDriver
+    public partial class OblikSerialDriver : IOblikDriver
     {
         /*-------------------------Private--------------------------------*/
 
@@ -24,7 +24,7 @@ namespace Oblik.Driver
         /// Конструктор
         /// </summary>
         /// <param name="connectionParams">Параметры подключения</param>
-        public OblikDriver(SerialConnectionParams connectionParams)
+        public OblikSerialDriver(SerialConnectionParams connectionParams)
         {
             this.connectionParams = connectionParams;
 
@@ -47,7 +47,7 @@ namespace Oblik.Driver
         /// <summary>
         /// Деструктор
         /// </summary>
-        ~OblikDriver()
+        ~OblikSerialDriver()
         {
             if (sp != null)
             {

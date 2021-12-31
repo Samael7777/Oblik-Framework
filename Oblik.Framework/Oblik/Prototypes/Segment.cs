@@ -19,7 +19,7 @@ namespace Oblik
         public virtual void Read()
         {
             if (ReadSegmentID == 0)
-                throw new OblikIOException("Not readable segment", (int)Error.NotReadableSegError);
+                throw new OblikIOException("Not readable segment", Error.NotReadableSegError);
 
             rawdata = oblikFS.ReadSegment(ReadSegmentID, 0, Size);
             FromRaw();
@@ -28,7 +28,7 @@ namespace Oblik
         public virtual void Write()
         {
             if (WriteSegmentID == 0)
-                throw new OblikIOException("Not writeable segment", (int)Error.NotWriteableSegError);
+                throw new OblikIOException("Not writeable segment", Error.NotWriteableSegError);
 
             ToRaw();
             oblikFS.WriteSegment(WriteSegmentID, 0, rawdata);

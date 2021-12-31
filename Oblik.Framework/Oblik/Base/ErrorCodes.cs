@@ -28,5 +28,6 @@
         NotWriteableSegError = 20,
         NotReadableSegError = 21,
         NotEraseableSegError = 22,
+        UnknownError = 255,
     }
 }

@@ -77,7 +77,9 @@ namespace Oblik
             float res;
             man = (UInt16)(buf & 0x7FF);                                      //Мантисса - биты 0-10
             exp = (UInt16)((buf & 0xF800) >> 11);                             //Порядок - биты 11-15
-            res = (float)Math.Pow(2, (exp - 15)) * (1 + man / 2048);          //Pow - возведение в степень
+            //exp = (UInt16)(buf & 0x1F);
+            //man = (UInt16)((buf & 0xFFE0) >> 5);
+            res = (float)Math.Pow(2, (exp - 15)) * (1 + man / 2048f);          //Pow - возведение в степень
             return res;
         }
 
@@ -93,7 +95,7 @@ namespace Oblik
             UInt16 sig = (UInt16)(buf & (UInt16)1);                                             //Знак - бит 0
             UInt16 man = (UInt16)((buf & 0x7FE) >> 1);                                          //Мантисса - биты 1-10
             UInt16 exp = (UInt16)((buf & 0xF800) >> 11);                                        //Порядок - биты 11-15
-            return (float)(Math.Pow(2, exp - 15) * (1 + (man / 2048)) * Math.Pow(-1, sig));     //Pow - возведение в степень
+            return (float)(Math.Pow(2, exp - 15) * (1 + (man / 2048f)) * Math.Pow(-1, sig));     //Pow - возведение в степень
         }
 
         /// <summary>
