@@ -29,20 +29,21 @@ namespace Oblik.FS
         /// <summary>
         /// Подготовка фрейма запроса к счетчику
         /// </summary>
+        /// <param name="address">Реальный адрес счетчика</param>
         /// <param name="segment">Сегмент счетчика</param>
         /// <param name="offset">Смещение относительно начала сегмента</param>
         /// <param name="len">Количество данных для чтения/записи</param>
         /// <param name="data">Данные для записи</param>
         /// <param name="access">Доступ на запись (1) или чтение (0)</param>
         /// <returns></returns>
-        private void PerformFrame(byte segment, UInt16 offset, byte len, Access access, byte[] data = null)
+        private void PerformFrame(byte address, byte segment, UInt16 offset, byte len, Access access, byte[] data = null)
         {
             //Формируем запрос L2
             l2 = new byte[5 + (len + 8) * (int)access];                    //5 байт заголовка + 8 байт пароля + данные 
             l2[0] = (byte)((segment & 127) + (int)access * 128);           //(биты 0 - 6 - номер сегмента, бит 7 = 1 - операция записи)
             l2[1] = (byte)oblikDriver.User;                                //Указываем уровень доступа
-            l2[2] = BitConverter.GetBytes(offset)[1];                      //Старший байт смещения
-            l2[3] = BitConverter.GetBytes(offset)[0];                      //Младший байт смещения
+            l2[2] = (byte)(offset >> 8);                                   //Старший байт смещения
+            l2[3] = (byte)(offset & 0xFF);                                 //Младший байт смещения
             l2[4] = len;                                                   //Размер считываемых данных
 
             //В случае записи в сегмент
@@ -57,7 +58,7 @@ namespace Oblik.FS
             l1 = new byte[5 + l2.Length];
             l1[0] = 0xA5;                                                   //Заголовок пакета
             l1[1] = 0x5A;                                                   //Заголовок пакета
-            l1[2] = (byte)(oblikDriver.Address & 0xff);                     //Адрес счетчика
+            l1[2] = address;                                                //Адрес счетчика
             l1[3] = (byte)(3 + l2.Length);                                  //Длина пакета L1 без ключей
             Array.Copy(l2, 0, l1, 4, l2.Length);                            //Вставляем запрос L2 в пакет L1
 

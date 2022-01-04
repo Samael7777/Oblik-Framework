@@ -28,10 +28,7 @@ namespace Oblik
         public CurrentValues(IOblikFS oblikFS) : base(oblikFS) { }
 
         protected override void FromRaw()
-        {
-
-            byte[] test = rawdata;
-            
+        {           
             int index = 0;
             Curr1 = Convert.ToUminiflo(rawdata, index);
             index += 2;

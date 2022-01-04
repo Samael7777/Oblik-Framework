@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using System;
 
 namespace Oblik
 {
@@ -8,7 +9,7 @@ namespace Oblik
     public class SerialConnectionParams
     {
         private string password;
-        private byte[] pwdBytes;
+        private byte[] passwordBytes;
 
         /// <summary>
         /// Номер порта счетчика
@@ -55,15 +56,18 @@ namespace Oblik
                     password.PadLeft(8, (char)0);
                 }
                 //Преобразование в массив байт
-                pwdBytes = new byte[8];
-                pwdBytes = Encoding.Default.GetBytes(password);
+                passwordBytes = Encoding.Default.GetBytes(password);
+                if (passwordBytes.Length < 8)
+                {
+                    Array.Resize(ref passwordBytes, 8);
+                }
             }
         }
 
         /// <summary>
         /// Пароль в виде массива байт
         /// </summary>
-        public byte[] PasswordArray { get => pwdBytes; }
+        public byte[] PasswordArray { get => passwordBytes; }
 
         /// <summary>
         /// Уровень доступа к сегментам счетчика
@@ -82,7 +86,7 @@ namespace Oblik
             password = "";
             User = UserLevel.Energo;
             Repeats = 5;
-            pwdBytes = new byte[8];
+            passwordBytes = new byte[8];
         }
     }
 }

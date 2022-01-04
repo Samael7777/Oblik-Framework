@@ -13,11 +13,6 @@ namespace Oblik
         public override int PointerSegmentID { get => 44; }
         public override int MaxRecords { get => 1750; }
         public override int RecordSize { get => 28; }
-        public override int NumberOfRecords
-        {
-            get => Convert.ToValue<UInt16>(oblikFS.ReadSegment(PointerSegmentID, 0, 2), 0);
-        }
-
         public List<DayGraphRow> Records { get; protected set; }
         
         public DayGraph(IOblikFS oblikFS) : base(oblikFS) 

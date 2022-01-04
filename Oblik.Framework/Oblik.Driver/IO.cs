@@ -30,6 +30,7 @@ namespace Oblik.Driver
                 if ((GetTickCount() - start) > (ulong)timeout)
                 {
                     //Таймаут
+                    sp.Close();
                     throw new OblikIOException("Timeout", Error.Timeout);                    
                 }
                 try
@@ -46,6 +47,7 @@ namespace Oblik.Driver
             if (offset != BytesToRead)
             {
                 //Ошибка чтения порта
+                sp.Close();
                 throw new OblikIOException("Port read error", Error.ReadError);
             }
             //Сохранение полученных данных
@@ -73,10 +75,11 @@ namespace Oblik.Driver
             //Попытка открытия порта
             try
             {
-                if (!sp.IsOpen)
+                if (sp.IsOpen)
                 {
-                    sp.Open();
-                }  
+                    sp.Close();
+                }
+                sp.Open();
             }
             catch (Exception e)
             {
@@ -94,15 +97,16 @@ namespace Oblik.Driver
             }
             catch (Exception e)
             {
+                sp.Close();
                 throw new OblikIOException(e.Message, Error.WriteError);
             }
 
             //Получение результата L1
             ReadAnswer(1, 0, ref answer);
-         
             //Проверка на ошибки L1
             if (answer[0] != 1)
             {
+                sp.Close(); //Закрытие порта
                 DecodeChannelError(answer[0]);
             }
 
@@ -113,6 +117,8 @@ namespace Oblik.Driver
 
             //Получение оставшихся данных
             ReadAnswer(L2len, 2, ref answer);
+            
+            sp.Close(); //Закрытие порта
 
             //Проверка контрольной суммы ответа
             byte cs = 0;

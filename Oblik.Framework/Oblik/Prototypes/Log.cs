@@ -7,9 +7,13 @@ namespace Oblik
 {
     public abstract class Log : Segment
 
-    {   
+    {
+        protected int numOfRecs;
         public abstract int MaxRecords { get; }
-        public abstract int NumberOfRecords { get;}
+        public virtual int NumberOfRecords 
+        {
+            get => numOfRecs;
+        }
         public abstract int RecordSize { get ; }
         public abstract int ClearSegmentID { get; }
         public abstract int PointerSegmentID { get; }
@@ -50,9 +54,13 @@ namespace Oblik
                 throw new OblikIOException("Not eraseable segment", Error.NotEraseableSegError);
 
             byte[] req = new byte[2];
-            req[1] = (byte)oblikFS.OblikDriver.Address;
+            req[1] = oblikFS.ReadSegment(66, 0, 1)[0]; //Адрес RS-485 счетчика
             req[0] = (byte)(~req[1]);
             oblikFS.WriteSegment(ClearSegmentID, 0, req);
+        }
+        public virtual void ReadRecords()
+        {
+            numOfRecs = Convert.ToValue<UInt16>(oblikFS.ReadSegment(PointerSegmentID, 0, 2), 0);
         }
 
     }

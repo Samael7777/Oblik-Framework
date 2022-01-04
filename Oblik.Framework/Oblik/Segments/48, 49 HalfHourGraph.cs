@@ -13,10 +13,6 @@ namespace Oblik
         public override int WriteSegmentID { get => 0; }
         public override int ClearSegmentID { get => 0; }
         public override int PointerSegmentID { get => 48; }
-        public override int NumberOfRecords
-        {
-            get => Convert.ToValue<ushort>(oblikFS.ReadSegment(PointerSegmentID, 0, 2), 0);
-        }
         public override int MaxRecords { get => 30; }
         public override int RecordSize { get => 20; }
         public List<HalfHourGraphRow> Records { get; protected set; }
@@ -33,6 +29,10 @@ namespace Oblik
         protected override void AddRecord(byte[] rawdata, int index)
         {
             Records.Add(new HalfHourGraphRow(rawdata, index));
+        }
+        public override void ReadRecords()
+        {
+            numOfRecs = oblikFS.ReadSegment(PointerSegmentID, 0, 1)[0];
         }
     }
 }

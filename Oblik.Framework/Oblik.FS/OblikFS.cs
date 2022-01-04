@@ -70,7 +70,7 @@ namespace Oblik.FS
             while (bytesLeft > 0)
             {
                 int querySize = (bytesLeft > maxPacket) ? maxPacket : bytesLeft;
-                PerformFrame((byte)segment, (ushort)nextOffset, (byte)querySize, Access.Read);
+                PerformFrame((byte)oblikDriver.Address, (byte)segment, (ushort)nextOffset, (byte)querySize, Access.Read);
                 byte[] answer = oblikDriver.Request(l1);      
                 DecodeSegmentError(answer[0]);      //Проверка на ошибки L2
                 nextOffset += querySize;
@@ -103,7 +103,10 @@ namespace Oblik.FS
             {
                 throw new ArgumentNullException(nameof(data));
             }
-            PerformFrame((byte)segment, (ushort)offset, (byte)data.Length, Access.Write, data);
+            
+            byte address = ReadSegment(66, 0, 1)[0]; //Получение адреса RS-485 счетчика
+           
+            PerformFrame(address, (byte)segment, (ushort)offset, (byte)data.Length, Access.Write, data); //Подготовка фрейма L2
             byte[] answer = oblikDriver.Request(l1);
             //Проверка на ошибки L2
             if (answer[0] != 0)

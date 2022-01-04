@@ -66,16 +66,5 @@ namespace Oblik
             MeterTime = new InternalTime(oblikFS);
             MeterNetwork = new NetworkConfig(oblikFS);
         }
-
-        /*--------------------Методы---------------------------------*/
-        /// <summary>
-        /// Получить основную информацию о счетчике
-        /// </summary>
-        public void ReadGeneralInfo()
-        {
-            Firmware.Read();
-            CalculationUnits.Read();
-            MeterNetwork.Read();
-        }
     }
 }
