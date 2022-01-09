@@ -73,14 +73,10 @@ namespace Oblik
         public static float ToUminiflo(byte[] rawdata, int index)
         {
             UInt16 buf = ToValue<UInt16>(rawdata, index);
-            UInt16 man, exp;
-            float res;
-            man = (UInt16)(buf & 0x7FF);                                      //Мантисса - биты 0-10
-            exp = (UInt16)((buf & 0xF800) >> 11);                             //Порядок - биты 11-15
-            //exp = (UInt16)(buf & 0x1F);
-            //man = (UInt16)((buf & 0xFFE0) >> 5);
-            res = (float)Math.Pow(2, (exp - 15)) * (1 + man / 2048f);          //Pow - возведение в степень
-            return res;
+            UInt16 man = (UInt16)(buf & 0x7FF);                                      //Мантисса - биты 0-10
+            UInt16 exp = (UInt16)((buf & 0xF800) >> 11);                             //Порядок - биты 11-15
+            float result = (float)(Math.Pow(2, exp - 15) * (1 + man / 2048f));      
+            return result;
         }
 
         /// <summary>
@@ -95,7 +91,8 @@ namespace Oblik
             UInt16 sig = (UInt16)(buf & (UInt16)1);                                             //Знак - бит 0
             UInt16 man = (UInt16)((buf & 0x7FE) >> 1);                                          //Мантисса - биты 1-10
             UInt16 exp = (UInt16)((buf & 0xF800) >> 11);                                        //Порядок - биты 11-15
-            return (float)(Math.Pow(2, exp - 15) * (1 + (man / 2048f)) * Math.Pow(-1, sig));     //Pow - возведение в степень
+            float result = (float)(Math.Pow(2, exp - 15) * (1 + (man / 2048f)) * Math.Pow(-1, sig));
+            return result;  
         }
 
         /// <summary>
@@ -109,174 +106,5 @@ namespace Oblik
             UInt32 Seconds = (UInt32)(Date - BaseTime).TotalSeconds;
             return ToBytes<uint>(Seconds);
         }
-
-        //----------------Старое, после проверки удалить!-----------------------//
-
-        /*
-         /// <summary>
-        /// Отдает массив заданной длины, начинающийся с заданного индекса исходного массива
-        /// </summary>
-        /// <param name="array">Источник</param>
-        /// <param name="index">Начальный индекс</param>
-        /// <param name="len">Длина</param>
-        /// <returns>Массив байт</returns>
-        public static byte[] ArrayPart(byte[] array, int index, int len)
-        {
-            byte[] result = new byte[len];
-            Array.Copy(array, index, result, 0, len);
-            return result;
-        }
-        /// <summary>
-        /// Преобразование массива байт в UInt32
-        /// </summary>
-        /// <param name="rawdata"></param>
-        /// <returns>Число UInt32</returns>
-        public static UInt32 ToUint32(byte[] rawdata)
-        {
-            Array.Reverse(rawdata);
-            MemoryStream stream = null;
-            try
-            {
-                stream = new MemoryStream(rawdata);
-                using (BinaryReader reader = new BinaryReader(stream))
-                {
-                    stream = null;
-                    return reader.ReadUInt32();
-                }
-            }
-            finally
-            {
-                if (stream != null)
-                {
-                    stream.Dispose();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Преобразование UInt32 в массив байт
-        /// </summary>
-        /// <param name="data"></param>
-        /// <returns></returns>
-        public static byte[] UInt32ToByte(UInt32 data)
-        {
-            byte[] res = new byte[sizeof(UInt32)];
-            MemoryStream stream = null;
-            try
-            {
-                stream = new MemoryStream(res);
-                using (BinaryWriter writer = new BinaryWriter(stream))
-                {
-                    stream = null;
-                    writer.Write(data);
-                    Array.Reverse(res);
-                    return res;
-                }
-            }
-            finally
-            {
-                if (stream != null)
-                {
-                    stream.Dispose();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Преобразование массива байт в float
-        /// </summary>
-        /// <param name="rawdata"></param>
-        /// <returns></returns>
-        public static float ToFloat(byte[] rawdata)
-        {
-            Array.Reverse(rawdata);
-            MemoryStream stream = null;
-            try
-            {
-                stream = new MemoryStream(rawdata);
-                using (BinaryReader reader = new BinaryReader(stream))
-                {
-                    stream = null;
-                    return reader.ReadSingle();
-                }
-            }
-            finally
-            {
-                if (stream != null)
-                {
-                    stream.Dispose();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Преобразование float в массив байт
-        /// </summary>
-        /// <param name="data"></param>
-        /// <returns></returns>
-        public static byte[] FloatToByte(float data)
-        {
-            byte[] res = new byte[sizeof(float)];
-            MemoryStream stream = null;
-            try
-            {
-                stream = new MemoryStream(res);
-                using (BinaryWriter writer = new BinaryWriter(stream))
-                {
-                    stream = null;
-                    writer.Write(data);
-                    Array.Reverse(res);
-                    return res;
-                }
-            }
-            finally
-            {
-                if (stream != null)
-                {
-                    stream.Dispose();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Преобразование массива байт в word (оно же uint16)
-        /// </summary>
-        /// <param name="rawdata"></param>
-        /// <returns></returns>
-        public static UInt16 ToUint16(byte[] rawdata)
-        {
-            Array.Reverse(rawdata);
-            MemoryStream stream = null;
-            try
-            {
-                stream = new MemoryStream(rawdata);
-                using (BinaryReader reader = new BinaryReader(stream))
-                {
-                    stream = null;
-                    return reader.ReadUInt16();
-                }
-            }
-            finally
-            {
-                if (stream != null)
-                {
-                    stream.Dispose();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Преобразование word(UInt16) в массив байт
-        /// </summary>
-        /// <param name="data"></param>
-        /// <returns></returns>
-        public static byte[] UInt16ToByte(UInt16 data)
-        {
-            byte[] res = new byte[2];
-            res[0] = (byte)((data & 0xFF00) >> 8);
-            res[1] = (byte)(data & 0x00FF);
-            return res;
-        }
-        */
     }
 }

@@ -10,6 +10,7 @@ namespace Oblik
         public abstract int WriteSegmentID { get; }
         public abstract int ReadSegmentID { get; }
 
+
         public Segment(IOblikFS oblikFS)
         {
             this.oblikFS = oblikFS;

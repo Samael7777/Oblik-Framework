@@ -45,7 +45,11 @@
   <ItemGroup>
     <Compile Include="Oblik.Driver\IOblikDriver.cs" />
     <Compile Include="Oblik.FS\IOblikFS.cs" />
-    <Compile Include="Oblik\Base\UserLevel.cs" />
+    <Compile Include="Oblik\Base\Interfaces\ISegment.cs" />
+    <Compile Include="Oblik\Base\Structures\SMiniFlo.cs" />
+    <Compile Include="Oblik\Base\Structures\Time.cs" />
+    <Compile Include="Oblik\Base\Structures\UMiniFlo.cs" />
+    <Compile Include="Oblik\Base\Enums\UserLevel.cs" />
     <Compile Include="Oblik\Meter.cs" />
     <Compile Include="Oblik\Prototypes\Log.cs" />
     <Compile Include="Oblik\Prototypes\Row.cs" />
@@ -64,7 +68,7 @@
     <Compile Include="Oblik\Segments\36 CurrentValues.cs" />
     <Compile Include="Oblik\Segments\44, 45 DayGraph.cs" />
     <Compile Include="Oblik\Prototypes\Rows\DayGraphRow.cs" />
-    <Compile Include="Oblik\Base\SerialConnectionParams.cs" />
+    <Compile Include="Oblik\Base\Classes\SerialConnectionParams.cs" />
     <Compile Include="Oblik.FS\L2ErrorDecoder.cs" />
     <Compile Include="Oblik.FS\OblikFS.cs" />
     <Compile Include="Oblik\Prototypes\Rows\EventLogRow.cs" />
@@ -76,8 +80,8 @@
     <Compile Include="Oblik\Segments\64, 65 InternalTime.cs" />
     <Compile Include="Oblik\Segments\66, 67 NetworkConfig.cs" />
     <Compile Include="Oblik\Segments\01 SegmentsMap.cs" />
-    <Compile Include="Oblik\Base\ErrorCodes.cs" />
-    <Compile Include="Oblik\Base\Exceptions.cs" />
+    <Compile Include="Oblik\Base\Enums\ErrorCodes.cs" />
+    <Compile Include="Oblik\Base\Classes\OblikIOException.cs" />
     <Compile Include="Oblik.Driver\IO.cs" />
     <Compile Include="Oblik.Driver\OblikDriver.cs" />
     <Compile Include="Oblik\Utils\Convert.cs" />
