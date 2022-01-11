@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Globalization;
 
 namespace Oblik
 {
@@ -35,6 +35,22 @@ namespace Oblik
             return new Time(value);
         }
         #endregion
+        public override string ToString()
+        {
+            return ((DateTime)this).ToString(CultureInfo.InvariantCulture);
+        }
+        public string ToString(IFormatProvider formatProvider)
+        {
+            return ((DateTime)this).ToString(formatProvider);
+        }
+        public string ToString(string format)
+        {
+            return ((DateTime)this).ToString(format, CultureInfo.InvariantCulture);
+        }
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return ((DateTime)this).ToString(format, formatProvider);
+        }
     }
 
     internal static class TimeHelper

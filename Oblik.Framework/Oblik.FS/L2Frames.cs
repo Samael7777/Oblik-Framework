@@ -11,7 +11,7 @@ namespace Oblik.FS
         {
             //Шифрование полей "Данные" и "Пароль"
             byte[] password = new byte[8];         //Пароль
-            Array.Copy(oblikDriver.Password, password, 8);
+            Array.Copy(connectionParams.PasswordArray, password, 8);
             byte x1 = 0x3A;
             for (int i = 0; i <= 7; i++) { x1 ^= password[i]; }
             int dpcsize = l2[4] + 8;                                //Размер "Данные + "Пароль" 
@@ -39,9 +39,9 @@ namespace Oblik.FS
         private void PerformFrame(byte address, byte segment, UInt16 offset, byte len, Access access, byte[] data = null)
         {
             //Формируем запрос L2
-            l2 = new byte[5 + (len + 8) * (int)access];                    //5 байт заголовка + 8 байт пароля + данные 
-            l2[0] = (byte)((segment & 127) + (int)access * 128);           //(биты 0 - 6 - номер сегмента, бит 7 = 1 - операция записи)
-            l2[1] = (byte)oblikDriver.User;                                //Указываем уровень доступа
+            l2 = new byte[5 + (len + 8) * (byte)access];                   //5 байт заголовка + 8 байт пароля + данные 
+            l2[0] = (byte)((segment & 127) + (byte)access * 128);          //(биты 0 - 6 - номер сегмента, бит 7 = 1 - операция записи)
+            l2[1] = (byte)connectionParams.User;                           //Указываем уровень доступа
             l2[2] = (byte)(offset >> 8);                                   //Старший байт смещения
             l2[3] = (byte)(offset & 0xFF);                                 //Младший байт смещения
             l2[4] = len;                                                   //Размер считываемых данных
@@ -50,7 +50,7 @@ namespace Oblik.FS
             if (access == Access.Write)
             {
                 Array.Copy(data, 0, l2, 5, len);                                //Копируем данные в L2
-                Array.Copy(oblikDriver.Password, 0, l2, len + 5, 8);            //Копируем пароль в L2
+                Array.Copy(connectionParams.PasswordArray, 0, l2, len + 5, 8);  //Копируем пароль в L2
                 Encode();                                                       //Шифруем данные и пароль L2
             }
 
@@ -58,7 +58,7 @@ namespace Oblik.FS
             l1 = new byte[5 + l2.Length];
             l1[0] = 0xA5;                                                   //Заголовок пакета
             l1[1] = 0x5A;                                                   //Заголовок пакета
-            l1[2] = address;                                                //Адрес счетчика
+            l1[2] = (oblikDriver.IsDirectConnected)? (byte)0: address; //                                             //Адрес счетчика
             l1[3] = (byte)(3 + l2.Length);                                  //Длина пакета L1 без ключей
             Array.Copy(l2, 0, l1, 4, l2.Length);                            //Вставляем запрос L2 в пакет L1
 
@@ -66,10 +66,8 @@ namespace Oblik.FS
             l1[l1.Length - 1] = 0;
             for (int i = 2; i < (l1.Length - 1); i++)
             {
-                l1[l1.Length - 1] ^= (byte)l1[i];
+                l1[l1.Length - 1] ^= l1[i];
             }
-
         }
-
     }
 }

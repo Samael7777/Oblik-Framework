@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Runtime.InteropServices;
 using Oblik.FS;
 using Oblik.Driver;
 
@@ -9,62 +7,355 @@ namespace Oblik
 {
     public class Meter
     {
-        //Соединение
-        private IOblikFS oblikFS;
+        
+        private readonly OblikFS oblikFS; //Драйвер файловой системы счетчика
 
-        /*-------------------СЕГМЕНТЫ---------------------*/
-        public SegmentsMap SegmentsList { get; private set; }
-        public FirmwareInfo Firmware { get; private set; }
-        public CurrentDayIntegralValues CurrentDayIntegralVals { get; private set; }
-        public CurrentMonthIntegralValues CurrentMonthIntegralVals { get; private set; }
-        public CurrentQuarterIntegralValues CurrentQuarterIntegralVals { get; private set; }
-        public CurrentYearIntegralValues CurrentYearIntegralVals { get; private set; }
-        public LastDayIntegralValues LastDayIntegralVals { get; private set; }
-        public LastMonthIntegralValues LastMonthIntegralVals { get; private set; }
-        public LastQuarterIntegralValues LastQuarterIntegralVals { get; private set; }
-        public LastYearIntegralValues LastYearIntegralVals { get; private set; }
-        public CurrentValues CurrentVals { get; private set; }
-        public MinuteValues MinuteVals { get; private set; }
-        public HalfHourValues HalfHourVals { get; private set; }
-        public CalcUnits CalculationUnits { get; private set; }
-        public DayGraph DayGraphRecords { get; private set; }
-        public EventLog EventRecords { get; private set; }
-        public HalfHourGraph HalfHourGraphVals { get; private set; }
-        public InternalTime MeterTime { get; private set; }
-        public NetworkConfig MeterNetwork { get; private set; }
+        //Конструктор
+        public Meter(IOblikDriver oblikDriver, ConnectionParams connectionParams)
+        {
+            oblikFS = new OblikFS(connectionParams, oblikDriver);
+        }
 
-        /*--------------------Конструкторы---------------------------------*/
-        public Meter(IOblikFS oblikFS)
+        /// <summary>
+        /// Истина, если счетчик подключен по RS-232
+        /// </summary>
+        public bool IsDirectConnected
         {
-            this.oblikFS = oblikFS;
-            Init();
+            get => oblikFS.OblikDriver.IsDirectConnected;
         }
-        public Meter(IOblikDriver oblikDriver)
+
+        #region Сегменты
+        
+        /// <summary>
+        /// Версия прошивки
+        /// </summary>
+        public FirmwareInfo Firmware
         {
-            oblikFS = new OblikFS(oblikDriver);
-            Init();
+            get => ReadData<FirmwareInfo>(2, 0);     
         }
-        private void Init()
+
+        /// <summary>
+        /// Карта сегментов
+        /// </summary>
+        public SegmentsMapRecord[] SegmentsMap
         {
-            SegmentsList = new SegmentsMap(oblikFS);
-            Firmware = new FirmwareInfo(oblikFS);
-            CurrentDayIntegralVals = new CurrentDayIntegralValues(oblikFS);
-            CurrentMonthIntegralVals = new CurrentMonthIntegralValues(oblikFS);
-            CurrentQuarterIntegralVals = new CurrentQuarterIntegralValues(oblikFS);
-            CurrentYearIntegralVals = new CurrentYearIntegralValues(oblikFS);
-            LastDayIntegralVals = new LastDayIntegralValues(oblikFS);
-            LastMonthIntegralVals = new LastMonthIntegralValues(oblikFS);
-            LastQuarterIntegralVals = new LastQuarterIntegralValues(oblikFS);
-            LastYearIntegralVals = new LastYearIntegralValues(oblikFS);
-            CurrentVals = new CurrentValues(oblikFS);
-            MinuteVals = new MinuteValues(oblikFS);
-            HalfHourVals = new HalfHourValues(oblikFS);
-            CalculationUnits = new CalcUnits(oblikFS);
-            DayGraphRecords = new DayGraph(oblikFS);
-            EventRecords = new EventLog(oblikFS);
-            HalfHourGraphVals = new HalfHourGraph(oblikFS);
-            MeterTime = new InternalTime(oblikFS);
-            MeterNetwork = new NetworkConfig(oblikFS);
+            get
+            {
+                int segments = ReadData<byte>(1, 0);    //Количество записей в карте сегментов
+                SegmentsMapRecord[] map = ReadData<SegmentsMapRecord>(1, 1, segments);
+                return map;
+            }
         }
+
+        /// <summary>
+        /// Интегральные показатели за текущие сутки
+        /// </summary>
+        public IntegralValues CurrentDayIntegralValues
+        {
+            get => ReadData<IntegralValues>(24, 0);
+        }
+        
+        /// <summary>
+        /// Интегральные показатели за текущий месяц
+        /// </summary>
+        public IntegralValues CurrentMonthIntegralValues
+        {
+            get => ReadData<IntegralValues>(25, 0);
+        }
+
+        /// <summary>
+        /// Интегральные показатели за текущий квартал
+        /// </summary>
+        public IntegralValues CurrentQuarterIntegralValues
+        {
+            get => ReadData<IntegralValues>(26, 0);
+        }
+
+        /// <summary>
+        /// Интегральные показатели за текущий год
+        /// </summary>
+        public IntegralValues CurrentYearIntegralValues
+        {
+            get => ReadData<IntegralValues>(27, 0);
+        }
+
+        /// <summary>
+        /// Интегральные показатели за прошлые сутки
+        /// </summary>
+        public IntegralValues LastDayIntegralValues
+        {
+            get => ReadData<IntegralValues>(28, 0);
+        }
+
+        /// <summary>
+        /// Интегральные показатели за прошлый месяц
+        /// </summary>
+        public IntegralValues LastMonthIntegralValues
+        {
+            get => ReadData<IntegralValues>(29, 0);
+        }
+
+        /// <summary>
+        /// Интегральные показатели за прошлый квартал
+        /// </summary>
+        public IntegralValues LastQuarterIntegralValues
+        {
+            get => ReadData<IntegralValues>(30, 0);
+        }
+
+        /// <summary>
+        /// Интегральные показатели за прошлый год
+        /// </summary>
+        public IntegralValues LastYearIntegralValues
+        {
+            get => ReadData<IntegralValues>(31, 0);
+        }
+
+        /// <summary>
+        /// Текущие значения
+        /// </summary>
+        public CurrentValues CurrentValues
+        {
+            get => ReadData<CurrentValues>(36, 0);
+        }
+
+        /// <summary>
+        /// Минутные значения
+        /// </summary>
+        public MinuteValues MinuteValues
+        {
+            get => ReadData<MinuteValues>(37, 0);
+        }
+
+        /// <summary>
+        /// Получасовые значения
+        /// </summary>
+        public HalfHourValues HalfHourValues
+        {
+            get => ReadData<HalfHourValues>(38, 0);
+        }
+
+        //Суточный график
+
+        /// <summary>
+        /// Указатель суточного графика
+        /// </summary>
+        public int DayGraphPointer
+        {
+            get => ReadData<ushort>(44, 0);
+        }
+
+        /// <summary>
+        /// Получить суточный график
+        /// </summary>
+        /// <param name="records">Количество последних записей</param>
+        /// <returns></returns>
+        public DayGraphRecord[] GetDayGraphRecords(int records)
+        {
+            int aviableRecords = DayGraphPointer;
+            if (records > aviableRecords)
+                throw new ArgumentOutOfRangeException("Number of records must be below or equal aviable records");
+            
+            int recordSize = Marshal.SizeOf(new DayGraphRecord());
+            int offset = (aviableRecords - records) * recordSize;
+            return ReadData<DayGraphRecord>(45, offset, records);
+        }
+        
+        /// <summary>
+        /// Очистка суточного графика
+        /// </summary>
+        public void CleanDayGraph()
+        {
+            CleanLog(88);
+        }
+
+        //Протокол событий
+        
+        /// <summary>
+        /// Указатель протокола событий
+        /// </summary>
+        public int EventLogPointer
+        {
+            get => ReadData<ushort>(46, 0);
+        }
+
+        /// <summary>
+        /// Получить протокол событий
+        /// </summary>
+        /// <param name="records">Количество последних записей</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        public EventLogRecord[] GetEventLogRecords(int records)
+        {
+            int aviableRecords = EventLogPointer;
+            if (records > aviableRecords)
+                throw new ArgumentOutOfRangeException("Number of records must be below or equal aviable records");
+
+            int recordSize = Marshal.SizeOf(new EventLogRecord());
+            int offset = (aviableRecords - records) * recordSize;
+            return ReadData<EventLogRecord>(47, offset, records);
+        }
+        
+        /// <summary>
+        /// Очистка протокола событий
+        /// </summary>
+        public void CleanEventLog()
+        {
+            CleanLog(89);
+        }
+
+        //Получасовой график
+
+        /// <summary>
+        /// Указатель получасового графика, указывает на самую старую запись
+        /// </summary>
+        public int HalfHourGraphPointer
+        {
+            get => ReadData<ushort>(48, 0);
+        }
+
+        /// <summary>
+        /// Получить получасовой график
+        /// </summary>
+        /// <returns></returns>
+        public HalfHourGraphRecord[] GetHalfHourGraph()
+        {
+            return ReadData<HalfHourGraphRecord>(49, 0, 30);
+        }
+
+        /// <summary>
+        /// Параметры вычислений
+        /// </summary>
+        public CalcUnits CalculationParams
+        {
+            get => ReadData<CalcUnits>(56, 0);
+            set => WriteData(57, 0, value);
+        }
+
+        /// <summary>
+        /// Текущее время счетчика по UTC
+        /// </summary>
+        public Time CurrentTimeUTC
+        {
+            get => ReadData<Time>(64, 0);
+            set => WriteData(65, 0, value);
+        }
+
+        /// <summary>
+        /// Настройка сети счетчика
+        /// </summary>
+        public NetworkConfig NetworkConfig
+        {
+            get => ReadData<NetworkConfig>(66, 0);
+            set
+            {
+                WriteData(67, 0, value);
+                
+                //Переход на новые настройки сети
+                if (!oblikFS.OblikDriver.IsDirectConnected)
+                {
+                    oblikFS.Address = value.Addr;
+                    oblikFS.Baudrate = 115200 / value.Divisor;
+                }
+            }
+        }
+        #endregion
+
+
+        #region Утилиты
+        /// <summary>
+        /// Прочитать сегмент
+        /// </summary>
+        /// <typeparam name="T">Структура данных сегмента</typeparam>
+        /// <param name="segment">Сегмент</param>
+        /// <param name="offset">Начальное смещение в байтах</param>
+        /// <returns></returns>
+        private T ReadData<T>(int segment, int offset) 
+            where T: struct
+        {
+            T result = default;
+            int lenght = Marshal.SizeOf(result);   
+            byte[] buffer = oblikFS.ReadSegment(segment, offset, lenght);
+            result = Convert.ToValue<T>(buffer, 0);
+            return result;
+        }
+
+        /// <summary>
+        /// Прочитать пакеты данных из сегмента
+        /// </summary>
+        /// <typeparam name="T">Структура данных сегмента</typeparam>
+        /// <param name="segment">Сегмент</param>
+        /// <param name="offset">Начальное смещение в байтах</param>
+        /// <param name="packets">Количество пакетов данных</param>
+        /// <returns>Массив структур данных сегмента</returns>
+        private T[] ReadData<T>(int segment, int offset, int packets)
+            where T: struct
+        {
+            T item = default;
+            T[] result = new T[packets];
+            int packetSize = Marshal.SizeOf(item);
+
+            //Получение данных со счетчика
+            byte[] buffer = oblikFS.ReadSegment(segment, offset, packets * packetSize, packetSize);
+            
+            //Преобразование сырых данных в массив структур
+            for (int i = 0; i < packets; i++)
+            {
+                item = Convert.ToValue<T>(buffer, i * packetSize);
+                result[i] = item;
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Записать данные в сегмент
+        /// </summary>
+        /// <typeparam name="T">Структура данных сегмента</typeparam>
+        /// <param name="segment">Сегмент</param>
+        /// <param name="offset">Начальное смещение в байтах</param>
+        /// <param name="data">Данные</param>
+        private void WriteData<T>(int segment, int offset, T data)
+            where T: struct
+        {
+            byte[] buffer = Convert.ToBytes<T>(data);
+            oblikFS.WriteSegment(segment, offset, buffer);
+        }
+
+        /// <summary>
+        /// Записать массив данных в сегмент
+        /// </summary>
+        /// <typeparam name="T">Структура данных сегмента</typeparam>
+        /// <param name="segment">Сегмент</param>
+        /// <param name="offset">Начальное смещение в байтах</param>
+        /// <param name="data">Массив данных</param>
+        private void WriteData<T>(int segment, int offset, T[] data)
+            where T : struct
+        {
+            T item = default;
+            int packets = data.Length;
+            int packetSize = Marshal.SizeOf(item);
+            //Преобразование массива данных в массив байт
+            byte[] buffer = new byte[packets * packetSize];     //Общий буфер для записи
+            for (int i = 0; i < packets; i++)
+            {
+                item = data[i];
+                byte[] packet = Convert.ToBytes<T>(item);
+                Array.Copy(packet, 0, buffer, i * packetSize, packet.Length);
+            }
+            //Запись данных в счетчик
+            oblikFS.WriteSegment(segment, offset, packetSize, buffer);
+        }
+
+        /// <summary>
+        /// Очистка графика
+        /// </summary>
+        /// <param name="segment">сегмент команды очистки</param>
+        private void CleanLog(int segment)
+        {
+            byte address = (byte)oblikFS.Address;
+            byte[] command = { (byte)~address, address };
+            oblikFS.WriteSegment(segment, 0, command);
+        }
+        #endregion
     }
 }

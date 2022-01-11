@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace Oblik
 {
@@ -31,6 +32,23 @@ namespace Oblik
             return new UMiniFlo(value);
         }
         #endregion
+
+        public override string ToString()
+        {
+            return ((float)this).ToString(CultureInfo.InvariantCulture);
+        }
+        public string ToString(IFormatProvider formatProvider)
+        {
+            return ((float)this).ToString(formatProvider);
+        }
+        public string ToString(string format)
+        {
+            return ((float)this).ToString(format, CultureInfo.InvariantCulture);
+        }
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return ((float)this).ToString(format, formatProvider);
+        }
     }
 
     internal static class UMiniFloHelper
