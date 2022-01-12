@@ -52,6 +52,7 @@ namespace Oblik
             return result;
         }
 
+        /*
         /// <summary>
         /// Преобразование массива байт в дату и время
         /// </summary>
@@ -106,5 +107,6 @@ namespace Oblik
             UInt32 Seconds = (UInt32)(Date - BaseTime).TotalSeconds;
             return ToBytes<uint>(Seconds);
         }
+        */
     }
 }

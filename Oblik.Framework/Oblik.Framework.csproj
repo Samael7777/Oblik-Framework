@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Oblik\Utils\PacketChecker.cs" />
     <Compile Include="Oblik\Base\Intrfaces\IOblikDriver.cs" />
     <Compile Include="Oblik\Base\Intrfaces\IOblikFS.cs" />
     <Compile Include="Oblik\Base\Classes\ConnectionParams.cs" />
@@ -63,14 +64,12 @@
     <Compile Include="Oblik\Base\Enums\UserLevel.cs" />
     <Compile Include="Oblik\Meter.cs" />
     <Compile Include="Oblik\Base\Classes\SerialConnectionParams.cs" />
-    <Compile Include="Oblik.FS\L2ErrorDecoder.cs" />
     <Compile Include="Oblik.FS\OblikFS.cs" />
     <Compile Include="Oblik\Base\Enums\ErrorCodes.cs" />
     <Compile Include="Oblik\Base\Classes\OblikIOException.cs" />
     <Compile Include="Oblik.Driver\OblikSerialDriver.cs" />
     <Compile Include="Oblik\Utils\Convert.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Oblik.FS\L2Frames.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

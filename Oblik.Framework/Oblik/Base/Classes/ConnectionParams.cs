@@ -13,6 +13,20 @@ namespace Oblik
         /// Адрес счетчика в сети RS-485
         /// </summary>
         public byte Address { get; set; }
+        
+        /// <summary>
+        /// Таймаут, мс
+        /// </summary>
+        public int Timeout { get; set; }
+
+        /// <summary>
+        /// Скорость соединения, бод
+        /// </summary>
+        public int Baudrate { get; set; }
+        
+        /// <summary>
+        /// Пароль счетчика
+        /// </summary>
         public string Password
         {
             get => password;
@@ -54,6 +68,8 @@ namespace Oblik
             password = "";
             User = UserLevel.Energo;
             passwordBytes = new byte[8];
+            Timeout = 300;
+            Baudrate = 9600;
         }
     }
 }

@@ -10,6 +10,7 @@ namespace Oblik.FS
         void WriteSegment(int segment, int offset, int packetsize, byte[] data);
         int Address { get; set; }
         int Baudrate { get; set; }
+        int Timeout { get; set; }
         UserLevel User { get; set; }
         string Password { get; set; }
         IOblikDriver OblikDriver { get; }
