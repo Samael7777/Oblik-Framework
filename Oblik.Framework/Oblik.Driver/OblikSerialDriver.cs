@@ -8,10 +8,11 @@ namespace Oblik.Driver
     {
         /*-------------------------Private--------------------------------*/
 
+        private readonly Mutex mutex;
         /// <summary>
         /// Параметры подключения
         /// </summary>
-        private SerialConnectionParams connectionParams;
+        private readonly SerialConnectionParams connectionParams;
 
         /// <summary>
         /// COM-порт
@@ -27,7 +28,7 @@ namespace Oblik.Driver
         public OblikSerialDriver(SerialConnectionParams connectionParams)
         {
             this.connectionParams = connectionParams;
-
+            mutex = new Mutex(false);
             //Настройка соединения с COM портом
             sp = new SerialPort
             {
@@ -90,73 +91,79 @@ namespace Oblik.Driver
             sp.WriteTimeout = timeout;
             sp.ReadTimeout = timeout + 100;
             int checkSum = 0;       //Контрольная сумма
-            
+            //Блокировка потока
+            mutex.WaitOne();
+
             //Очистка буферов
-            lock (sp)
+            try
             {
-                try
-                {
-                    if (!sp.IsOpen) sp.Open();
-                    sp.DiscardOutBuffer();
-                    sp.DiscardInBuffer();
-                }
-                catch (Exception e)
-                {
-                    throw new OblikIOException(e.Message, Error.OpenPortError);
-                }
-                //Отправка запроса
-                try
-                {
-                    sp.Write(l1, 0, l1.Length);
-                }
-                catch (Exception e)
-                {
-                    sp.Close();
-                    throw new OblikIOException(e.Message, Error.WriteError);
-                }
-
-                //Получение результата L1
-                int L1Err = ReadAnswer(1)[0];
-
-                //Проверка на ошибки L1
-                if (L1Err != 1)
-                {
-                    sp.Close();
-                    PacketChecker.L1Error(L1Err);
-                }
-
-                checkSum ^= L1Err;  //Контрольная сумма
-
-                //Получение количества байт в ответе
-                int L2len = ReadAnswer(1)[0];
-                checkSum ^= L2len;
-
-                //Получение оставшихся данных
-                byte[] l2Packet = ReadAnswer(L2len + 1);
-                sp.Close();
-                //Проверка контрольной суммы ответа
-                for (int i = 0; i <= L2len; i++)
-                {
-                    checkSum ^= l2Packet[i];
-                }
-
-                //Ошибка контрольной суммы ответа
-                if (checkSum != 0)
-                {
-                    throw new OblikIOException("Answer L1 CSC Error", Error.L1CSCError);
-                }
-
-                //Проверка ответа L2
-                if (l2Packet[0] != 0)
-                {
-                    PacketChecker.L2Error(l2Packet[0]);
-                }
-
-                //Формирование ответа
-                int l2DataSize = l2Packet.Length - 2;
-                Array.Resize(ref result, l2DataSize);
-                Array.Copy(l2Packet, 2, result, 0, l2DataSize);
+                if (!sp.IsOpen) sp.Open();
+                sp.DiscardOutBuffer();
+                sp.DiscardInBuffer();
             }
+            catch (Exception e)
+            {
+                mutex.ReleaseMutex();
+                throw new OblikIOException(e.Message, Error.OpenPortError);
+            }
+            //Отправка запроса
+            try
+            {
+                sp.Write(l1, 0, l1.Length);
+            }
+            catch (Exception e)
+            {
+                sp.Close();
+                mutex.ReleaseMutex();
+                throw new OblikIOException(e.Message, Error.WriteError);
+            }
+
+            //Получение результата L1
+            int L1Err = ReadAnswer(1)[0];
+
+            //Проверка на ошибки L1
+            if (L1Err != 1)
+            {
+                sp.Close();
+                mutex.ReleaseMutex();
+                PacketChecker.L1Error(L1Err);
+            }
+
+            checkSum ^= L1Err;  //Контрольная сумма
+
+            //Получение количества байт в ответе
+            int L2len = ReadAnswer(1)[0];
+            checkSum ^= L2len;
+
+            //Получение оставшихся данных
+            byte[] l2Packet = ReadAnswer(L2len + 1);
+            sp.Close();
+
+            //Проверка контрольной суммы ответа
+            for (int i = 0; i <= L2len; i++)
+            {
+                checkSum ^= l2Packet[i];
+            }
+
+            //Ошибка контрольной суммы ответа
+            if (checkSum != 0)
+            {
+                mutex.ReleaseMutex();
+                throw new OblikIOException("Answer L1 CSC Error", Error.L1CSCError);
+            }
+
+            //Проверка ответа L2
+            if (l2Packet[0] != 0)
+            {
+                mutex.ReleaseMutex();
+                PacketChecker.L2Error(l2Packet[0]);
+            }
+
+            //Формирование ответа
+            int l2DataSize = l2Packet.Length - 2;
+            Array.Resize(ref result, l2DataSize);
+            Array.Copy(l2Packet, 2, result, 0, l2DataSize);
+            mutex.ReleaseMutex();
             return result;
         }
         
@@ -184,6 +191,7 @@ namespace Oblik.Driver
                 {
                     //Таймаут
                     sp.Close();
+                    mutex.ReleaseMutex();
                     throw new OblikIOException("Timeout", Error.Timeout);
                 }
                 try
@@ -201,6 +209,7 @@ namespace Oblik.Driver
             {
                 //Ошибка чтения порта
                 sp.Close();
+                mutex.ReleaseMutex();
                 throw new OblikIOException("Port read error", Error.ReadError);
             }
             return buffer;
