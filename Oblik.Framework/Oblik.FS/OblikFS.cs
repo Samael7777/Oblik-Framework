@@ -32,9 +32,9 @@ namespace Oblik.FS
         /// </summary>
         private byte[] l2;
 
-        private ConnectionParams connectionParams;
+        private readonly ConnectionParams connectionParams;
 
-        private IOblikDriver oblikDriver;
+        private readonly IOblikDriver oblikDriver;
 
         /*-------------------------Constructors---------------------------------*/
         public OblikFS(ConnectionParams connectionParams, IOblikDriver oblikDriver)
@@ -49,7 +49,7 @@ namespace Oblik.FS
         /// <summary>
         /// Драйвер счетчика
         /// </summary>
-        public IOblikDriver OblikDriver { get => OblikDriver; }
+        public IOblikDriver OblikDriver { get => oblikDriver; }
         
         public int Baudrate 
         { 

@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Oblik\Base\Structures\Segments\NetworkConfig.cs" />
     <Compile Include="Oblik\Utils\PacketChecker.cs" />
     <Compile Include="Oblik\Base\Intrfaces\IOblikDriver.cs" />
     <Compile Include="Oblik\Base\Intrfaces\IOblikFS.cs" />
@@ -56,7 +57,7 @@
     <Compile Include="Oblik\Base\Structures\Segments\HalfHourValues.cs" />
     <Compile Include="Oblik\Base\Structures\Segments\IntegralValues.cs" />
     <Compile Include="Oblik\Base\Structures\Segments\MinuteValues.cs" />
-    <Compile Include="Oblik\Base\Structures\Segments\NetworkConfig.cs" />
+    <Compile Include="Oblik\Base\Structures\Segments\MeterNetworkConfig.cs" />
     <Compile Include="Oblik\Base\Structures\Segments\SegmentsMapRecord.cs" />
     <Compile Include="Oblik\Base\Structures\SMiniFlo.cs" />
     <Compile Include="Oblik\Base\Structures\Time.cs" />

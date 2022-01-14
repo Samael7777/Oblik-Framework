@@ -246,16 +246,32 @@ namespace Oblik
         /// </summary>
         public NetworkConfig NetworkConfig
         {
-            get => ReadData<NetworkConfig>(66, 0);
+            get
+            {
+                MeterNetworkConfig meternetconfig = ReadData<MeterNetworkConfig>(66, 0);
+                NetworkConfig netconfig = new NetworkConfig
+                {
+                    Address = meternetconfig.Addr,
+                    Baudrate = (meternetconfig.Divisor == 0) ? 57600 : 115200 / meternetconfig.Divisor
+                };
+                return netconfig;
+            } 
+                
             set
             {
-                WriteData(67, 0, value);
+                MeterNetworkConfig meternetconfig = new MeterNetworkConfig
+                {
+                    Addr = (byte)value.Address,
+                    Divisor = (ushort)((value.Baudrate == 0)? 2: (115200 / value.Baudrate))
+                };
+
+                WriteData(67, 0, meternetconfig);
                 
                 //Переход на новые настройки сети
-                if (!oblikFS.OblikDriver.IsDirectConnected)
+                if (!IsDirectConnected)
                 {
-                    oblikFS.Address = value.Addr;
-                    oblikFS.Baudrate = 115200 / value.Divisor;
+                    oblikFS.Address = value.Address;
+                    oblikFS.Baudrate = (value.Baudrate == 0)? 57600: value.Baudrate;
                 }
             }
         }
