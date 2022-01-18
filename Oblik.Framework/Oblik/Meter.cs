@@ -312,7 +312,7 @@ namespace Oblik
             int packetSize = Marshal.SizeOf(item);
 
             //Получение данных со счетчика
-            byte[] buffer = oblikFS.ReadSegment(segment, offset, packets * packetSize, packetSize);
+            byte[] buffer = oblikFS.ReadSegment(segment, offset, packetSize * packets);
             
             //Преобразование сырых данных в массив структур
             for (int i = 0; i < packets; i++)
@@ -359,7 +359,7 @@ namespace Oblik
                 Array.Copy(packet, 0, buffer, i * packetSize, packet.Length);
             }
             //Запись данных в счетчик
-            oblikFS.WriteSegment(segment, offset, packetSize, buffer);
+            oblikFS.WriteSegment(segment, offset, buffer);
         }
 
         /// <summary>

@@ -44,7 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Oblik\Base\Structures\Segments\NetworkConfig.cs" />
-    <Compile Include="Oblik\Utils\PacketChecker.cs" />
+    <Compile Include="Oblik\Utils\PacketHelper.cs" />
     <Compile Include="Oblik\Base\Intrfaces\IOblikDriver.cs" />
     <Compile Include="Oblik\Base\Intrfaces\IOblikFS.cs" />
     <Compile Include="Oblik\Base\Classes\ConnectionParams.cs" />

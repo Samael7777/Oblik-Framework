@@ -126,7 +126,7 @@ namespace Oblik.Driver
             {
                 sp.Close();
                 mutex.ReleaseMutex();
-                PacketChecker.L1Error(L1Err);
+                PacketHelper.CheckL1Error(L1Err);
             }
 
             checkSum ^= L1Err;  //Контрольная сумма
@@ -156,11 +156,11 @@ namespace Oblik.Driver
             if (l2Packet[0] != 0)
             {
                 mutex.ReleaseMutex();
-                PacketChecker.L2Error(l2Packet[0]);
+                PacketHelper.CheckL2Error(l2Packet[0]);
             }
 
             //Формирование ответа
-            int l2DataSize = l2Packet.Length - 2;
+            int l2DataSize = l2Packet.Length - 3;
             Array.Resize(ref result, l2DataSize);
             Array.Copy(l2Packet, 2, result, 0, l2DataSize);
             mutex.ReleaseMutex();
