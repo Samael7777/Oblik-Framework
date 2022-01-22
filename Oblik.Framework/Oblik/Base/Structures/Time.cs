@@ -6,7 +6,10 @@ namespace Oblik
     [Serializable]
     public struct Time
     {
-        private UInt32 value;
+        //Базовая точка времени 01.01.1970 00:00 GMT
+        private static readonly DateTime baseTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
+        private uint value;
 
         public Time(uint value)
         {
@@ -14,9 +17,9 @@ namespace Oblik
         }
         public Time(DateTime value)
         {
-            this.value = TimeHelper.ToTime(value);
+            this.value = ToTime(value);
         }
-        public static UInt32 GetBits(Time value)
+        public static uint GetBits(Time value)
         {
             return value.value;
         }
@@ -28,7 +31,7 @@ namespace Oblik
         }
         public static explicit operator DateTime(Time value)
         {
-            return TimeHelper.ToUTCTime(value);
+            return ToUTCTime(value);
         }
         public static implicit operator Time(DateTime value)
         {
@@ -51,20 +54,14 @@ namespace Oblik
         {
             return ((DateTime)this).ToString(format, formatProvider);
         }
-    }
 
-    internal static class TimeHelper
-    {
-        //Базовая точка времени 01.01.1970 00:00 GMT
-        private static DateTime baseTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc); 
-        
-        public static DateTime ToUTCTime (Time value)
-        {   
+        private static DateTime ToUTCTime(Time value)
+        {
             return baseTime.AddSeconds(Time.GetBits(value));
         }
-        public static UInt32 ToTime(DateTime value)
+        private static uint ToTime(DateTime value)
         {
-            return (UInt32)(value - baseTime).TotalSeconds;
+            return (uint)(value - baseTime).TotalSeconds;
         }
     }
 }

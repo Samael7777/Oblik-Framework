@@ -25,7 +25,7 @@ namespace Oblik
         }
 
         #region Сегменты
-        
+
         /// <summary>
         /// Версия прошивки
         /// </summary>

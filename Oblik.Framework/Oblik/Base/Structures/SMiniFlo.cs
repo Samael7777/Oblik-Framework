@@ -25,7 +25,7 @@ namespace Oblik
         }       
         public static implicit operator float(SMiniFlo value) 
         { 
-            return SMiniFloHelper.SMiniFloToFloat(value); 
+            return SMiniFloToFloat(value); 
         }
         public static implicit operator SMiniFlo(ushort value)
         {
@@ -50,18 +50,15 @@ namespace Oblik
             return ((float)this).ToString(format, formatProvider);
         }
 
-    }
-
-    internal static class SMiniFloHelper
-    {
-        public static float SMiniFloToFloat(SMiniFlo value)
+        private static float SMiniFloToFloat(SMiniFlo value)
         {
-            ushort buf = SMiniFlo.GetBits(value);
-            UInt16 sig = (UInt16)(buf & (UInt16)1);                                             //Знак - бит 0
-            UInt16 man = (UInt16)((buf & 0x7FE) >> 1);                                          //Мантисса - биты 1-10
-            UInt16 exp = (UInt16)((buf & 0xF800) >> 11);                                        //Порядок - биты 11-15
-            float result = (float)(Math.Pow(2, exp - 15) * (1 + (man / 2048f)) * Math.Pow(-1, sig));
+            ushort buf = value.value;
+            ushort sig = (ushort)(buf & 1);                                                     //Знак - бит 0
+            ushort man = (ushort)((buf & 0x7FE) >> 1);                                          //Мантисса - биты 1-10
+            ushort exp = (ushort)((buf & 0xF800) >> 11);                                        //Порядок - биты 11-15
+            float result = (buf == 0) ? 0.0f : (float)(Math.Pow(2, exp - 15) * (1 + (man / 2048f)) * Math.Pow(-1, sig));
             return result;
         }
+
     }
 }
