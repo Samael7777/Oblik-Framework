@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Oblik
 {
-    internal static class PacketHelper
+    internal class PacketHelper
     {
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace Oblik
         /// <param name="password"></param>
         /// <param name="data">Данные для записи</param>
         /// <returns>Сформированный пакеи запроса L1</returns>
-        internal static byte[] CreatePacket(byte address, byte segment, ushort offset, byte len, byte access, UserLevel user, string password = "", byte[] data = null)
+        internal byte[] CreatePacket(byte address, byte segment, ushort offset, byte len, byte access, UserLevel user, string password = "", byte[] data = null)
         {          
             access &= 1; //Маскировка лишних бит
             //Формируем запрос L2
@@ -122,7 +122,7 @@ namespace Oblik
         /// </summary>
         /// <param name="l2">Паект L2</param>
         /// <param name="password">Массив с паролем</param>
-        private static void Encode(ref byte[] l2, byte[] password)
+        private void Encode(ref byte[] l2, byte[] password)
         {
             //Шифрование полей "Данные" и "Пароль"
             byte x1 = 0x3A;

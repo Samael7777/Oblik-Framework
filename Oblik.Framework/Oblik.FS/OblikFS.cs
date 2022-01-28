@@ -104,7 +104,7 @@ namespace Oblik.FS
                     writebuffer = new byte[queryBytes];
                     Array.Copy(data, index, writebuffer, 0, queryBytes);
                 }
-                byte[] request = PacketHelper.CreatePacket(address, (byte)segment, (ushort)offset, (byte)queryBytes, access, User, Password, writebuffer);
+                byte[] request = new PacketHelper().CreatePacket(address, (byte)segment, (ushort)offset, (byte)queryBytes, access, User, Password, writebuffer);
                 byte[] readbuffer = OblikDriver.Request(request, Baudrate, Timeout);
                 if (!write)
                 {
